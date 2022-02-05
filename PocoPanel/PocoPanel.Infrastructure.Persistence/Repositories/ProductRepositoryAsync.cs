@@ -10,19 +10,13 @@ using System.Threading.Tasks;
 
 namespace PocoPanel.Infrastructure.Persistence.Repositories
 {
-    public class ProductRepositoryAsync : GenericRepositoryAsync<Product>, IProductRepositoryAsync
+    public class ProductRepositoryAsync : GenericRepositoryAsync<tblProduct>, IProductRepositoryAsync
     {
-        private readonly DbSet<Product> _products;
+        private readonly DbSet<tblProduct> _products;
 
         public ProductRepositoryAsync(ApplicationDbContext dbContext) : base(dbContext)
         {
-            _products = dbContext.Set<Product>();
-        }
-
-        public Task<bool> IsUniqueBarcodeAsync(string barcode)
-        {
-            return _products
-                .AllAsync(p => p.Barcode != barcode);
+            _products = dbContext.Set<tblProduct>();
         }
     }
 }

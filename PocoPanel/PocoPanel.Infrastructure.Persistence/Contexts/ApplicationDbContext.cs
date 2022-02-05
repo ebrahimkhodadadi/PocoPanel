@@ -23,7 +23,6 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
             _dateTime = dateTime;
             _authenticatedUser = authenticatedUser;
         }
-        public DbSet<Product> Products { get; set; }
 
         public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -54,5 +53,16 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
             }
             base.OnModelCreating(builder);
         }
+
+        #region Tables
+        public DbSet<tblProduct> tblProduct { get; set; }
+        public DbSet<tblProductKind> tblProductKind { get; set; }
+        public DbSet<tblCountry> tblCountry { get; set; }
+        public DbSet<tblDiscount> tblDiscount { get; set; }
+        public DbSet<tblOrder> tblOrder { get; set; }
+        public DbSet<tblOrderDetail> tblOrderDetail { get; set; }
+        public DbSet<tblPriceKind> tblPriceKind { get; set; }
+        public DbSet<tblProductPriceKind> tblProductPriceKind { get; set; }
+        #endregion
     }
 }

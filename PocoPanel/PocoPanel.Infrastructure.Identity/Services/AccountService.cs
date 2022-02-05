@@ -79,7 +79,7 @@ namespace PocoPanel.Infrastructure.Identity.Services
             return new Response<AuthenticationResponse>(response, $"Authenticated {user.UserName}");
         }
 
-        public async Task<Response<string>> RegisterAsync(RegisterRequest request, string origin)
+        public async Task<Response<string>> RegisterAsync(RegisterRequest request,string origin)
         {
             var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);
             if (userWithSameUserName != null)
@@ -91,7 +91,12 @@ namespace PocoPanel.Infrastructure.Identity.Services
                 Email = request.Email,
                 FirstName = request.FirstName,
                 LastName = request.LastName,
-                UserName = request.UserName
+                UserName = request.UserName,
+                PublicCode = Guid.NewGuid().ToString().Substring(0, 8),
+                ApiToken = RandomTokenString(),
+                VisitorCode = request.VisitorCode,
+                CountryID = request.CountryID
+
             };
             var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
             if (userWithSameEmail == null)
@@ -102,7 +107,7 @@ namespace PocoPanel.Infrastructure.Identity.Services
                     await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
                     var verificationUri = await SendVerificationEmail(user, origin);
                     //TODO: Attach Email Service here and configure it via appsettings
-                    await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest() { From = "mail@codewithmukesh.com", To = user.Email, Body = $"Please confirm your account by visiting this URL {verificationUri}", Subject = "Confirm Registration" });
+                    await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest() { From = "infoEmail@pocopanel.ir", To = user.Email, Body = $"Please confirm your account by visiting this URL {verificationUri}", Subject = "Confirm Registration PocoPanel" });
                     return new Response<string>(user.Id, message: $"User Registered. Please confirm your account by visiting this URL {verificationUri}");
                 }
                 else
@@ -136,7 +141,8 @@ namespace PocoPanel.Infrastructure.Identity.Services
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("uid", user.Id),
-                new Claim("ip", ipAddress)
+                new Claim("ip", ipAddress),
+                new Claim("FullName", user.FirstName + " " + user.LastName)
             }
             .Union(userClaims)
             .Union(roleClaims);
@@ -166,7 +172,7 @@ namespace PocoPanel.Infrastructure.Identity.Services
         {
             var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
-            var route = "api/account/confirm-email/";
+            var route = "account/confirm-email/";
             var _enpointUri = new Uri(string.Concat($"{origin}/", route));
             var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
             verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);

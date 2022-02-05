@@ -8,6 +8,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using PocoPanel.Application.Exceptions;
 using PocoPanel.Application.Interfaces;
+using PocoPanel.Application.Interfaces.Repositories;
 using PocoPanel.Application.Wrappers;
 using PocoPanel.Domain.Settings;
 using PocoPanel.Infrastructure.Identity.Contexts;

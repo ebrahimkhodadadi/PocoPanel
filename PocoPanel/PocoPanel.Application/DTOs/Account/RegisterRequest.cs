@@ -27,5 +27,10 @@ namespace PocoPanel.Application.DTOs.Account
         [Required]
         [Compare("Password")]
         public string ConfirmPassword { get; set; }
+
+        [StringLength(10)]
+        public string VisitorCode { get; set; }
+
+        public int CountryID { get; set; }
     }
 }

@@ -12,8 +12,8 @@ namespace PocoPanel.Application.Mappings
     {
         public GeneralProfile()
         {
-            CreateMap<Product, GetAllProductsViewModel>().ReverseMap();
-            CreateMap<CreateProductCommand, Product>();
+            CreateMap<tblProduct, GetAllProductsViewModel>().ReverseMap();
+            CreateMap<CreateProductCommand, tblProduct>();
             CreateMap<GetAllProductsQuery, GetAllProductsParameter>();
         }
     }

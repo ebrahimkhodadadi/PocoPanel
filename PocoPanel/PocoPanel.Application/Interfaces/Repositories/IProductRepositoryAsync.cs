@@ -6,8 +6,7 @@ using System.Threading.Tasks;
 
 namespace PocoPanel.Application.Interfaces.Repositories
 {
-    public interface IProductRepositoryAsync : IGenericRepositoryAsync<Product>
+    public interface IProductRepositoryAsync : IGenericRepositoryAsync<tblProduct>
     {
-        Task<bool> IsUniqueBarcodeAsync(string barcode);
     }
 }

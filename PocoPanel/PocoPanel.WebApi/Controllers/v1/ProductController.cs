@@ -16,10 +16,11 @@ using System.Threading.Tasks;
 
 namespace PocoPanel.WebApi.Controllers.v1
 {
+    [Authorize]
     [ApiVersion("1.0")]
     public class ProductController : BaseApiController
     {
-        // GET: api/<controller>
+        // GET: <controller>
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] GetAllProductsParameter filter)
         {
@@ -36,7 +37,6 @@ namespace PocoPanel.WebApi.Controllers.v1
 
         // POST api/<controller>
         [HttpPost]
-        [Authorize]
         public async Task<IActionResult> Post(CreateProductCommand command)
         {
             return Ok(await Mediator.Send(command));
@@ -44,7 +44,6 @@ namespace PocoPanel.WebApi.Controllers.v1
 
         // PUT api/<controller>/5
         [HttpPut("{id}")]
-        [Authorize]
         public async Task<IActionResult> Put(int id, UpdateProductCommand command)
         {
             if (id != command.Id)
@@ -56,7 +55,6 @@ namespace PocoPanel.WebApi.Controllers.v1
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
-        [Authorize]
         public async Task<IActionResult> Delete(int id)
         {
             return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));

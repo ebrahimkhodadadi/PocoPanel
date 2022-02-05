@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using PocoPanel.Infrastructure.Identity.Models;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace PocoPanel.Infrastructure.Identity.Contexts
@@ -15,6 +16,16 @@ namespace PocoPanel.Infrastructure.Identity.Contexts
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            #region Decimal
+            //All Decimals will have 18,6 Range
+            foreach (var property in builder.Model.GetEntityTypes()
+            .SelectMany(t => t.GetProperties())
+            .Where(p => p.ClrType == typeof(decimal) || p.ClrType == typeof(decimal?)))
+            {
+                property.SetColumnType("decimal(18,6)");
+            }
+            #endregion
+
             base.OnModelCreating(builder);
             builder.HasDefaultSchema("Identity");
             builder.Entity<ApplicationUser>(entity =>

@@ -9,6 +9,7 @@ using PocoPanel.Infrastructure.Identity;
 using PocoPanel.Infrastructure.Persistence;
 using PocoPanel.Infrastructure.Shared;
 using PocoPanel.WebApi.Extensions;
+using PocoPanel.WebApi.Models;
 using PocoPanel.WebApi.Services;
 
 namespace PocoPanel.WebApi
@@ -30,6 +31,7 @@ namespace PocoPanel.WebApi
             services.AddControllers();
             services.AddApiVersioningExtension();
             services.AddHealthChecks();
+
             services.AddScoped<IAuthenticatedUserService, AuthenticatedUserService>();
         }
 
@@ -57,5 +59,6 @@ namespace PocoPanel.WebApi
                  endpoints.MapControllers();
              });
         }
+
     }
 }
