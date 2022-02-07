@@ -31,9 +31,14 @@ namespace PocoPanel.Domain.Entities
 
         #region Foreign Key
         [Required]
+        public virtual int? tblProductKindId { get; set; }
         public virtual tblProductKind tblProductKind { get; set; }
 
+        public virtual int? tblProviderId { get; set; }
+        public virtual tblProvider tblProvider { get; set; }
+
         public virtual ICollection<tblProductPriceKind> tblProductPriceKind { get; set; }
+
         #endregion
     }
 }

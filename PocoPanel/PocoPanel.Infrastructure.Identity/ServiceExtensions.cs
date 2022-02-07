@@ -39,9 +39,17 @@ namespace PocoPanel.Infrastructure.Identity
                     b => b.MigrationsAssembly(typeof(IdentityContext).Assembly.FullName)));
             }
             services.AddIdentity<ApplicationUser, IdentityRole>().AddEntityFrameworkStores<IdentityContext>().AddDefaultTokenProviders();
+
             #region Services
+
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IGetUser, GetUserService>();
+
             #endregion
+
+            //Memory cash
+            services.AddMemoryCache();
+
             services.Configure<JWTSettings>(configuration.GetSection("JWTSettings"));
             services.AddAuthentication(options =>
             {

@@ -44,6 +44,7 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            #region decimal
             //All Decimals will have 18,6 Range
             foreach (var property in builder.Model.GetEntityTypes()
             .SelectMany(t => t.GetProperties())
@@ -51,6 +52,47 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
             {
                 property.SetColumnType("decimal(18,6)");
             }
+            #endregion
+
+
+            builder.Entity<tblPriceKind>()
+            .Property(et => et.Id)
+            .ValueGeneratedNever();
+
+            builder.Entity<tblProductKind>()
+            .Property(et => et.Id)
+            .ValueGeneratedNever();
+
+            #region Seed Data
+
+            #region tblPriceKind
+            builder.Entity<tblPriceKind>().HasData(
+                new tblPriceKind() { Id = 1, Name = "Rial" },
+                new tblPriceKind() { Id = 2, Name = "USD" }
+                );
+            #endregion
+
+            #region tblPriceKind
+            builder.Entity<tblProductKind>().HasData(
+                //Main Services
+                new tblProductKind() { Id = 1, Name = "Telegram" },
+                new tblProductKind() { Id = 2, Name = "Instagram" },
+
+                //Parent Services
+                 //Telegram
+                new tblProductKind() { Id = 3, Name = "Member", ParentID = 1 },
+                new tblProductKind() { Id = 4, Name = "Like", ParentID = 1 },
+                new tblProductKind() { Id = 5, Name = "Comment", ParentID = 1 },
+                new tblProductKind() { Id = 6, Name = "View", ParentID = 1 },
+                 //Instagram
+                new tblProductKind() { Id = 7, Name = "Follower", ParentID = 2 },
+                new tblProductKind() { Id = 8, Name = "Like", ParentID = 2 },
+                new tblProductKind() { Id = 9, Name = "Comment", ParentID = 2 }
+                );
+            #endregion
+
+            #endregion
+
             base.OnModelCreating(builder);
         }
 
@@ -63,6 +105,7 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
         public DbSet<tblOrderDetail> tblOrderDetail { get; set; }
         public DbSet<tblPriceKind> tblPriceKind { get; set; }
         public DbSet<tblProductPriceKind> tblProductPriceKind { get; set; }
+        public DbSet<tblProvider> tblProvider { get; set; }
         #endregion
     }
 }

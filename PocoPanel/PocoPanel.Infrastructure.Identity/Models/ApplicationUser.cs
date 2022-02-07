@@ -25,6 +25,8 @@ namespace PocoPanel.Infrastructure.Identity.Models
 
         public int CountryID { get; set; }
 
+        public string Currency { get; set; }
+
         public List<RefreshToken> RefreshTokens { get; set; }
 
         public bool OwnsToken(string token)

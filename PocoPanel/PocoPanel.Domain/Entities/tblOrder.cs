@@ -27,8 +27,10 @@ namespace PocoPanel.Domain.Entities
 
 
         #region Foreign Key
+        public int? tblPriceKindId { get; set; }
         public virtual tblPriceKind tblPriceKind { get; set; }
 
+        public virtual int? tblDiscountId { get; set; }
         public virtual tblDiscount tblDiscount { get; set; }
 
         public virtual ICollection<tblOrderDetail> tblOrderDetails { get; set; }

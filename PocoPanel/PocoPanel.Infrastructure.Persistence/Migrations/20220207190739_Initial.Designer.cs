@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PocoPanel.Infrastructure.Persistence.Contexts;
 
 namespace PocoPanel.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220207190739_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -199,18 +201,6 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.HasIndex("tblCountryId");
 
                     b.ToTable("tblPriceKind");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Rial"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "USD"
-                        });
                 });
 
             modelBuilder.Entity("PocoPanel.Domain.Entities.tblProduct", b =>
@@ -283,60 +273,6 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.HasIndex("ParentID");
 
                     b.ToTable("tblProductKind");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Telegram"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Instagram"
-                        },
-                        new
-                        {
-                            Id = 3,
-                            Name = "Member",
-                            ParentID = 1
-                        },
-                        new
-                        {
-                            Id = 4,
-                            Name = "Like",
-                            ParentID = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            Name = "Comment",
-                            ParentID = 1
-                        },
-                        new
-                        {
-                            Id = 6,
-                            Name = "View",
-                            ParentID = 1
-                        },
-                        new
-                        {
-                            Id = 7,
-                            Name = "Follower",
-                            ParentID = 2
-                        },
-                        new
-                        {
-                            Id = 8,
-                            Name = "Like",
-                            ParentID = 2
-                        },
-                        new
-                        {
-                            Id = 9,
-                            Name = "Comment",
-                            ParentID = 2
-                        });
                 });
 
             modelBuilder.Entity("PocoPanel.Domain.Entities.tblProductPriceKind", b =>
@@ -346,17 +282,27 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int?>("tblPriceKindId")
+                    b.Property<int?>("tblPriceKindId1")
                         .HasColumnType("int");
 
-                    b.Property<int?>("tblProductId")
+                    b.Property<int?>("tblPriceKindIdId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("tblProductId1")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("tblProductIdId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
-                    b.HasIndex("tblPriceKindId");
+                    b.HasIndex("tblPriceKindId1");
 
-                    b.HasIndex("tblProductId");
+                    b.HasIndex("tblPriceKindIdId");
+
+                    b.HasIndex("tblProductId1");
+
+                    b.HasIndex("tblProductIdId");
 
                     b.ToTable("tblProductPriceKind");
                 });
@@ -470,11 +416,19 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("PocoPanel.Domain.Entities.tblPriceKind", "tblPriceKind")
                         .WithMany("tblProductPriceKind")
-                        .HasForeignKey("tblPriceKindId");
+                        .HasForeignKey("tblPriceKindId1");
+
+                    b.HasOne("PocoPanel.Domain.Entities.tblProductKind", "tblPriceKindId")
+                        .WithMany()
+                        .HasForeignKey("tblPriceKindIdId");
 
                     b.HasOne("PocoPanel.Domain.Entities.tblProduct", "tblProduct")
                         .WithMany("tblProductPriceKind")
-                        .HasForeignKey("tblProductId");
+                        .HasForeignKey("tblProductId1");
+
+                    b.HasOne("PocoPanel.Domain.Entities.tblProductKind", "tblProductId")
+                        .WithMany()
+                        .HasForeignKey("tblProductIdId");
                 });
 #pragma warning restore 612, 618
         }

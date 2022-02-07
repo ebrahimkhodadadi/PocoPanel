@@ -19,7 +19,7 @@ namespace PocoPanel.Domain.Entities
         public string Name { get; set; }
 
         [Required]
-        public bool IsPercent {get;set;}
+        public bool IsPercent { get; set; }
 
         [Required]
         public decimal DiscountValue { get; set; }
@@ -29,6 +29,7 @@ namespace PocoPanel.Domain.Entities
 
         #region Foreign Key
 
+        public virtual int? tblProductId { get; set; }
         public virtual tblProduct tblProduct { get; set; }
 
         #endregion

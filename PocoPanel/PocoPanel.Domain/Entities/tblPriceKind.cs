@@ -19,6 +19,7 @@ namespace PocoPanel.Domain.Entities
         public string Name { get; set; }
 
         #region Foreign Key
+        public virtual int? tblCountryId { get; set; }
         public virtual tblCountry tblCountry { get; set; }
 
         public virtual ICollection<tblProductPriceKind> tblProductPriceKind { get; set; }

@@ -21,7 +21,8 @@ namespace PocoPanel.Domain.Entities
 
         #region Foreign Key
         [ForeignKey("ParentID")]
-        public tblCountry tblCountrys { get; set; }
+        public virtual tblCountry tblCountrys { get; set; }
+        public virtual int? ParentID { get; set; }
         #endregion
     }
 }

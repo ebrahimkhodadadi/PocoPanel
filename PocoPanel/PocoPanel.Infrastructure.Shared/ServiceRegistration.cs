@@ -15,6 +15,7 @@ namespace PocoPanel.Infrastructure.Shared
             services.Configure<WebsiteModel>(_config.GetSection("website"));
             services.AddTransient<IDateTimeService, DateTimeService>();
             services.AddTransient<IEmailService, EmailService>();
+            services.AddScoped<IConvert, ConvertService>();
         }
     }
 }

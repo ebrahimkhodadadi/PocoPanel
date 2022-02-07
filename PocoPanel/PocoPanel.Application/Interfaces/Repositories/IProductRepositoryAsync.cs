@@ -8,5 +8,8 @@ namespace PocoPanel.Application.Interfaces.Repositories
 {
     public interface IProductRepositoryAsync : IGenericRepositoryAsync<tblProduct>
     {
+        public Task<bool> IsExistProductKindId(int tblProductKindId);
+        public Task<bool> IsExistProviderId(int tblProviderId);
+        
     }
 }

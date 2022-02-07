@@ -22,6 +22,7 @@ namespace PocoPanel.Domain.Entities
         #region Foreign Key
         [ForeignKey("ParentID")]
         public virtual tblProductKind tblProductKinds { get; set; }
+        public virtual int? ParentID { get; set; }
 
         public virtual ICollection<tblProduct> tblProducts { get; set; }
         #endregion

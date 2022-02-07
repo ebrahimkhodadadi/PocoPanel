@@ -1,5 +1,8 @@
+using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -7,6 +10,7 @@ using PocoPanel.Application;
 using PocoPanel.Application.Interfaces;
 using PocoPanel.Infrastructure.Identity;
 using PocoPanel.Infrastructure.Persistence;
+using PocoPanel.Infrastructure.Persistence.Contexts;
 using PocoPanel.Infrastructure.Shared;
 using PocoPanel.WebApi.Extensions;
 using PocoPanel.WebApi.Models;
@@ -53,7 +57,17 @@ namespace PocoPanel.WebApi
             app.UseSwaggerExtension();
             app.UseErrorHandlingMiddleware();
             app.UseHealthChecks("/health");
+            app.UseResponseCaching();
 
+            #region Header Response
+
+            app.Use(async (context, next) =>
+             {
+                 context.Response.Headers.Add("X-Site", "www.PocoPanel.ir");
+                 await next();
+             });
+
+            #endregion
             app.UseEndpoints(endpoints =>
              {
                  endpoints.MapControllers();

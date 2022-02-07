@@ -32,8 +32,10 @@ namespace PocoPanel.Domain.Entities
         public int Quantity { get; set; }
 
         #region Foreign Key
+        public virtual int? tblProductId { get; set; }
         public virtual tblProduct tblProduct { get; set; }
 
+        public virtual int? tblOrderId { get; set; }
         public virtual tblOrder tblOrder { get; set; }
         #endregion
     }

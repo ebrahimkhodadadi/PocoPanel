@@ -3,6 +3,7 @@ using MediatR;
 using PocoPanel.Application.Interfaces.Repositories;
 using PocoPanel.Application.Wrappers;
 using PocoPanel.Domain.Entities;
+using System.ComponentModel.DataAnnotations;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -12,6 +13,15 @@ namespace PocoPanel.Application.Features.Products.Commands.CreateProduct
     {
         public string Name { get; set; }
         public string Description { get; set; }
+        public double Decending { get; set; }
+        public string Title { get; set; }
+        public int tblProviderId { get; set; }
+        [Required]
+        public decimal Price { get; set; }
+        [Required]
+        public int Quantity { get; set; }
+        [Required]
+        public int tblProductKindId { get; set; }
     }
     public class CreateProductCommandHandler : IRequestHandler<CreateProductCommand, Response<int>>
     {
