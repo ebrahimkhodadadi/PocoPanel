@@ -1,4 +1,5 @@
 ﻿using MediatR;
+using PocoPanel.Application.DTOs.Products;
 using PocoPanel.Application.Exceptions;
 using PocoPanel.Application.Interfaces.Repositories;
 using PocoPanel.Application.Wrappers;
@@ -11,21 +12,25 @@ using System.Threading.Tasks;
 
 namespace PocoPanel.Application.Features.Products.Queries.GetProductById
 {
-    public class GetProductByIdQuery : IRequest<Response<tblProduct>>
+    public class GetProductByIdQuery : IRequest<Response<GetProductViewModel>>
     {
         public int Id { get; set; }
-        public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, Response<tblProduct>>
+        public string Currency { get; set; }
+
+        public class GetProductByIdQueryHandler : IRequestHandler<GetProductByIdQuery, Response<GetProductViewModel>>
         {
             private readonly IProductRepositoryAsync _productRepository;
             public GetProductByIdQueryHandler(IProductRepositoryAsync productRepository)
             {
                 _productRepository = productRepository;
             }
-            public async Task<Response<tblProduct>> Handle(GetProductByIdQuery query, CancellationToken cancellationToken)
+            public async Task<Response<GetProductViewModel>> Handle(GetProductByIdQuery query, CancellationToken cancellationToken)
             {
-                var product = await _productRepository.GetByIdAsync(query.Id);
-                if (product == null) throw new ApiException($"Product Not Found.");
-                return new Response<tblProduct>(product);
+                var productViewModel = await _productRepository.GetProductViewModelByIdAsync(query.Id, query.Currency);
+                if(productViewModel != null)
+                    return new Response<GetProductViewModel>(productViewModel);
+
+                throw new ApiException($"Product Not Found.");
             }
         }
     }

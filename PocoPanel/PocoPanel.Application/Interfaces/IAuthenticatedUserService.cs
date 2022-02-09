@@ -7,5 +7,6 @@ namespace PocoPanel.Application.Interfaces
     public interface IAuthenticatedUserService
     {
         string UserId { get; }
+        string Currency { get; }
     }
 }

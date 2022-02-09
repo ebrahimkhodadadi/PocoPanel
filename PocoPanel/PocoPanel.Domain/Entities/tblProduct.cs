@@ -21,10 +21,14 @@ namespace PocoPanel.Domain.Entities
 
         public string Title { get; set; }
 
+        public double Decending { get; set; }
+
+        public bool IsDelete { get; set; }
+
+        public int? ProviderProductID { get; set; }
+        
         [Required]
         public decimal Price { get; set; }
-
-        public double Decending { get; set; }
 
         [Required]
         public int Quantity { get; set; }

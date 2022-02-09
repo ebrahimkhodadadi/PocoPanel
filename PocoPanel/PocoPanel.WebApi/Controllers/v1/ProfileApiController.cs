@@ -7,10 +7,10 @@ using PocoPanel.Application.Interfaces;
 namespace PocoPanel.WebApi.Controllers.v1
 {
     [ApiVersion("1.0")]
-    public class ProfileController : BaseApiController
+    public class ProfileApiController : BaseApiController
     {
         private readonly IGetUser _IGetUser;
-        public ProfileController(IGetUser iGetUser)
+        public ProfileApiController(IGetUser iGetUser)
         {
             _IGetUser = iGetUser;
         }
@@ -23,5 +23,6 @@ namespace PocoPanel.WebApi.Controllers.v1
                 return NotFound("User Not Found!");
             return Ok(user);
         }
+
     }
 }

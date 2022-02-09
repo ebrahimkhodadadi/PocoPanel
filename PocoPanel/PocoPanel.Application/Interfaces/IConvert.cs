@@ -7,6 +7,6 @@ namespace PocoPanel.Application.Interfaces
 {
     public interface IConvert
     {
-        public decimal RoundNumber(decimal number);
+        public decimal RoundNumber(decimal? number);
     }
 }

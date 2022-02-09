@@ -79,7 +79,7 @@ namespace PocoPanel.Infrastructure.Identity.Services
             return new Response<AuthenticationResponse>(response, $"Authenticated {user.UserName}");
         }
 
-        public async Task<Response<string>> RegisterAsync(RegisterRequest request,string origin)
+        public async Task<Response<string>> RegisterAsync(RegisterRequest request, string origin)
         {
             var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);
             if (userWithSameUserName != null)
@@ -141,6 +141,7 @@ namespace PocoPanel.Infrastructure.Identity.Services
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("uid", user.Id),
                 new Claim("ip", ipAddress),
+                new Claim("Currency", user.Currency),
                 new Claim("FullName", user.FirstName + " " + user.LastName)
             }
             .Union(userClaims)

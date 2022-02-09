@@ -11,10 +11,12 @@ namespace PocoPanel.WebApi.Services
     public class AuthenticatedUserService : IAuthenticatedUserService
     {
         public string UserId { get; }
+        public string Currency { get; }
 
         public AuthenticatedUserService(IHttpContextAccessor httpContextAccessor)
         {
             UserId = httpContextAccessor.HttpContext?.User?.FindFirstValue("uid");
+            Currency = httpContextAccessor.HttpContext?.User?.FindFirstValue("Currency");
         }
     }
 }

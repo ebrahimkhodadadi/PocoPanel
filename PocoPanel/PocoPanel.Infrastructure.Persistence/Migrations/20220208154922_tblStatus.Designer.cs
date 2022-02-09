@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PocoPanel.Infrastructure.Persistence.Contexts;
 
 namespace PocoPanel.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220208154922_tblStatus")]
+    partial class tblStatus
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -255,9 +257,6 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,6)");
 
-                    b.Property<int?>("ProviderProductID")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -360,13 +359,10 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<decimal>("Price")
-                        .HasColumnType("decimal(18,6)");
-
-                    b.Property<int>("tblPriceKindId")
+                    b.Property<int?>("tblPriceKindId")
                         .HasColumnType("int");
 
-                    b.Property<int>("tblProductId")
+                    b.Property<int?>("tblProductId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -540,15 +536,11 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                 {
                     b.HasOne("PocoPanel.Domain.Entities.tblPriceKind", "tblPriceKind")
                         .WithMany("tblProductPriceKind")
-                        .HasForeignKey("tblPriceKindId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("tblPriceKindId");
 
                     b.HasOne("PocoPanel.Domain.Entities.tblProduct", "tblProduct")
                         .WithMany("tblProductPriceKind")
-                        .HasForeignKey("tblProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("tblProductId");
                 });
 #pragma warning restore 612, 618
         }

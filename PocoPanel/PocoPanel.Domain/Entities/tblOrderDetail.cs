@@ -23,9 +23,6 @@ namespace PocoPanel.Domain.Entities
         public decimal TotallPrice { get; set; }
 
         [Required]
-        public byte Status { get; set; }
-
-        [Required]
         public string SocialUserName { get; set; }
 
         [Required]
@@ -37,6 +34,10 @@ namespace PocoPanel.Domain.Entities
 
         public virtual int? tblOrderId { get; set; }
         public virtual tblOrder tblOrder { get; set; }
+
+        [Required]
+        public virtual int? tblStatusId { get; set; }
+        public virtual tblStatus tblStatus { get; set; }
         #endregion
     }
 }

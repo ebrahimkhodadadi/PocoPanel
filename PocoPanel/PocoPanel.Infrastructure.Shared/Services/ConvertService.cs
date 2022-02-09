@@ -8,9 +8,12 @@ namespace PocoPanel.Infrastructure.Shared.Services
 {
     public class ConvertService : IConvert
     {
-        public decimal RoundNumber(decimal number)
+        public decimal RoundNumber(decimal? number)
         {
-            return Math.Round(number, MidpointRounding.AwayFromZero);
+            if (number.HasValue)
+                return Math.Round(number.Value, MidpointRounding.AwayFromZero);
+            else
+                return 0;
         }
     }
 }

@@ -1,37 +1,44 @@
-﻿using AutoMapper;
-using MediatR;
-using PocoPanel.Application.Filters;
-using PocoPanel.Application.Interfaces.Repositories;
-using PocoPanel.Application.Wrappers;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using MediatR;
+using PocoPanel.Application.DTOs.Products;
+using PocoPanel.Application.Exceptions;
+using PocoPanel.Application.Interfaces;
+using PocoPanel.Application.Interfaces.Repositories;
+using PocoPanel.Application.Wrappers;
 
 namespace PocoPanel.Application.Features.Products.Queries.GetAllProducts
 {
-    public class GetAllProductsQuery : IRequest<PagedResponse<IEnumerable<GetAllProductsViewModel>>>
+    public class GetAllProductsQuery : IRequest<Response<IEnumerable<GetProductViewModel>>>
     {
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
-    }
-    public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsQuery, PagedResponse<IEnumerable<GetAllProductsViewModel>>>
-    {
-        private readonly IProductRepositoryAsync _productRepository;
-        private readonly IMapper _mapper;
-        public GetAllProductsQueryHandler(IProductRepositoryAsync productRepository, IMapper mapper)
-        {
-            _productRepository = productRepository;
-            _mapper = mapper;
-        }
+        public string Currency { get; set; }
 
-        public async Task<PagedResponse<IEnumerable<GetAllProductsViewModel>>> Handle(GetAllProductsQuery request, CancellationToken cancellationToken)
+        public class GetAllProductQueryHandler : IRequestHandler<GetAllProductsQuery, Response<IEnumerable<GetProductViewModel>>>
         {
-            var validFilter = _mapper.Map<GetAllProductsParameter>(request);
-            var product = await _productRepository.GetPagedReponseAsync(validFilter.PageNumber, validFilter.PageSize);
-            var productViewModel = _mapper.Map<IEnumerable<GetAllProductsViewModel>>(product);
-            return new PagedResponse<IEnumerable<GetAllProductsViewModel>>(productViewModel, validFilter.PageNumber, validFilter.PageSize);
+            private readonly IProductRepositoryAsync _productRepository;
+            private readonly IAuthenticatedUserService _authenticatedUser;
+
+            public GetAllProductQueryHandler(IProductRepositoryAsync productRepository, IAuthenticatedUserService authenticatedUser)
+            {
+                _productRepository = productRepository;
+                _authenticatedUser = authenticatedUser;
+            }
+            public async Task<Response<IEnumerable<GetProductViewModel>>> Handle(GetAllProductsQuery query, CancellationToken cancellationToken)
+            {
+                string currency;
+                if (!string.IsNullOrWhiteSpace(query.Currency))
+                    currency = query.Currency;
+                else
+                    currency = _authenticatedUser.Currency;
+
+                var productViewModel = await _productRepository.GetProductViewModelByIdAsync(currency);
+                if (productViewModel.Count() > 0)
+                    return new Response<IEnumerable<GetProductViewModel>>(productViewModel);
+
+                throw new ApiException($"Products Not Found.");
+            }
         }
     }
 }

@@ -17,8 +17,6 @@ namespace PocoPanel.Application.Features.Products.Commands.CreateProduct
         public string Title { get; set; }
         public int tblProviderId { get; set; }
         [Required]
-        public decimal Price { get; set; }
-        [Required]
         public int Quantity { get; set; }
         [Required]
         public int tblProductKindId { get; set; }

@@ -19,9 +19,6 @@ namespace PocoPanel.Application.Features.Products.Commands.CreateProduct
         {
             this.productRepository = productRepository;
 
-            RuleFor(p => p.Price)
-                .NotNull().WithMessage("{PropertyName} is required.");
-
             RuleFor(p => p.Quantity)
                 .NotEmpty().WithMessage("{PropertyName} Can not be emtpy.")
                 .NotNull().WithMessage("{PropertyName} is required.");

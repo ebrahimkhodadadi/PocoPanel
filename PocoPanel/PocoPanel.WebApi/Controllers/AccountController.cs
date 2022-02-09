@@ -34,7 +34,7 @@ namespace PocoPanel.WebApi.Controllers
         {
             return Ok(await _accountService.RegisterAsync(request, _Website.API));
         }
-        [HttpGet("confirm-email")]
+        [HttpPost("confirm-email")]
         public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
         {
             var origin = Request.Headers["origin"];

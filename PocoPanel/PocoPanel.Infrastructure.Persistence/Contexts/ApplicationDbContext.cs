@@ -54,7 +54,6 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
             }
             #endregion
 
-
             builder.Entity<tblPriceKind>()
             .Property(et => et.Id)
             .ValueGeneratedNever();
@@ -62,6 +61,14 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
             builder.Entity<tblProductKind>()
             .Property(et => et.Id)
             .ValueGeneratedNever();
+
+            builder.Entity<tblStatus>()
+            .Property(et => et.Id)
+            .ValueGeneratedNever();
+
+            builder.Entity<tblProduct>()
+            .Property(et => et.IsDelete)
+            .HasDefaultValue(false);
 
             #region Seed Data
 
@@ -91,6 +98,20 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
                 );
             #endregion
 
+             #region tblStatus
+            builder.Entity<tblStatus>().HasData(
+                new tblStatus() { Id = 1, Name = "Waiting" },
+                new tblStatus() { Id = 2, Name = "Accepted" },
+                new tblStatus() { Id = 3, Name = "Rejected" },
+                new tblStatus() { Id = 4, Name = "Completed" },
+                new tblStatus() { Id = 5, Name = "Unknown" }
+                );
+            #endregion
+
+            #endregion
+
+            #region Query Filter
+            builder.Entity<tblProduct>().HasQueryFilter(p => !p.IsDelete);
             #endregion
 
             base.OnModelCreating(builder);
@@ -106,6 +127,7 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
         public DbSet<tblPriceKind> tblPriceKind { get; set; }
         public DbSet<tblProductPriceKind> tblProductPriceKind { get; set; }
         public DbSet<tblProvider> tblProvider { get; set; }
+        public DbSet<tblStatus> tblStatus {get; set;}
         #endregion
     }
 }

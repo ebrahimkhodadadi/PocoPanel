@@ -10,8 +10,8 @@ using PocoPanel.Infrastructure.Persistence.Contexts;
 namespace PocoPanel.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20220203233841_Initial")]
-    partial class Initial
+    [Migration("20220209140835_tblProductPriceKind-Price")]
+    partial class tblProductPriceKindPrice
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -107,9 +107,6 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
-
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -122,11 +119,17 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.Property<int?>("tblPriceKindId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("tblStatusId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("tblDiscountId");
 
                     b.HasIndex("tblPriceKindId");
+
+                    b.HasIndex("tblStatusId");
 
                     b.ToTable("tblOrder");
                 });
@@ -160,9 +163,6 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<byte>("Status")
-                        .HasColumnType("tinyint");
-
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
@@ -175,11 +175,17 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.Property<int?>("tblProductId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("tblStatusId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
 
                     b.HasIndex("tblOrderId");
 
                     b.HasIndex("tblProductId");
+
+                    b.HasIndex("tblStatusId");
 
                     b.ToTable("tblOrderDetail");
                 });
@@ -187,9 +193,7 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("PocoPanel.Domain.Entities.tblPriceKind", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .HasColumnType("nvarchar(20)")
@@ -203,6 +207,18 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.HasIndex("tblCountryId");
 
                     b.ToTable("tblPriceKind");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Rial"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "USD"
+                        });
                 });
 
             modelBuilder.Entity("PocoPanel.Domain.Entities.tblProduct", b =>
@@ -224,6 +240,11 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.Property<string>("Description")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("IsDelete")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("bit")
+                        .HasDefaultValue(false);
+
                     b.Property<DateTime?>("LastModified")
                         .HasColumnType("datetime2");
 
@@ -236,18 +257,27 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("Price")
                         .HasColumnType("decimal(18,6)");
 
+                    b.Property<int?>("ProviderProductID")
+                        .HasColumnType("int");
+
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
                     b.Property<string>("Title")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("tblProductKindId")
+                    b.Property<int?>("tblProductKindId")
+                        .IsRequired()
+                        .HasColumnType("int");
+
+                    b.Property<int?>("tblProviderId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("tblProductKindId");
+
+                    b.HasIndex("tblProviderId");
 
                     b.ToTable("tblProduct");
                 });
@@ -255,9 +285,7 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
             modelBuilder.Entity("PocoPanel.Domain.Entities.tblProductKind", b =>
                 {
                     b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -271,6 +299,168 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.HasIndex("ParentID");
 
                     b.ToTable("tblProductKind");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Telegram"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Instagram"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Member",
+                            ParentID = 1
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Like",
+                            ParentID = 1
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Comment",
+                            ParentID = 1
+                        },
+                        new
+                        {
+                            Id = 6,
+                            Name = "View",
+                            ParentID = 1
+                        },
+                        new
+                        {
+                            Id = 7,
+                            Name = "Follower",
+                            ParentID = 2
+                        },
+                        new
+                        {
+                            Id = 8,
+                            Name = "Like",
+                            ParentID = 2
+                        },
+                        new
+                        {
+                            Id = 9,
+                            Name = "Comment",
+                            ParentID = 2
+                        });
+                });
+
+            modelBuilder.Entity("PocoPanel.Domain.Entities.tblProductPriceKind", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<decimal>("Price")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<int>("tblPriceKindId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("tblProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("tblPriceKindId");
+
+                    b.HasIndex("tblProductId");
+
+                    b.ToTable("tblProductPriceKind");
+                });
+
+            modelBuilder.Entity("PocoPanel.Domain.Entities.tblProvider", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<DateTime>("Created")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("CreatedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DocumentAddress")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("LastModified")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("LastModifiedBy")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Password")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<decimal>("ProviderCredit")
+                        .HasColumnType("decimal(18,6)");
+
+                    b.Property<string>("ProviderToken")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Url")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblProvider");
+                });
+
+            modelBuilder.Entity("PocoPanel.Domain.Entities.tblStatus", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("tblStatus");
+
+                    b.HasData(
+                        new
+                        {
+                            Id = 1,
+                            Name = "Waiting"
+                        },
+                        new
+                        {
+                            Id = 2,
+                            Name = "Accepted"
+                        },
+                        new
+                        {
+                            Id = 3,
+                            Name = "Rejected"
+                        },
+                        new
+                        {
+                            Id = 4,
+                            Name = "Completed"
+                        },
+                        new
+                        {
+                            Id = 5,
+                            Name = "Unknown"
+                        });
                 });
 
             modelBuilder.Entity("PocoPanel.Domain.Entities.tblCountry", b =>
@@ -296,6 +486,12 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.HasOne("PocoPanel.Domain.Entities.tblPriceKind", "tblPriceKind")
                         .WithMany()
                         .HasForeignKey("tblPriceKindId");
+
+                    b.HasOne("PocoPanel.Domain.Entities.tblStatus", "tblStatus")
+                        .WithMany("tblOrder")
+                        .HasForeignKey("tblStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PocoPanel.Domain.Entities.tblOrderDetail", b =>
@@ -307,6 +503,12 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.HasOne("PocoPanel.Domain.Entities.tblProduct", "tblProduct")
                         .WithMany()
                         .HasForeignKey("tblProductId");
+
+                    b.HasOne("PocoPanel.Domain.Entities.tblStatus", "tblStatus")
+                        .WithMany("tblOrderDetails")
+                        .HasForeignKey("tblStatusId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("PocoPanel.Domain.Entities.tblPriceKind", b =>
@@ -323,6 +525,10 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                         .HasForeignKey("tblProductKindId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("PocoPanel.Domain.Entities.tblProvider", "tblProvider")
+                        .WithMany("tblProduct")
+                        .HasForeignKey("tblProviderId");
                 });
 
             modelBuilder.Entity("PocoPanel.Domain.Entities.tblProductKind", b =>
@@ -330,6 +536,21 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.HasOne("PocoPanel.Domain.Entities.tblProductKind", "tblProductKinds")
                         .WithMany()
                         .HasForeignKey("ParentID");
+                });
+
+            modelBuilder.Entity("PocoPanel.Domain.Entities.tblProductPriceKind", b =>
+                {
+                    b.HasOne("PocoPanel.Domain.Entities.tblPriceKind", "tblPriceKind")
+                        .WithMany("tblProductPriceKind")
+                        .HasForeignKey("tblPriceKindId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("PocoPanel.Domain.Entities.tblProduct", "tblProduct")
+                        .WithMany("tblProductPriceKind")
+                        .HasForeignKey("tblProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 #pragma warning restore 612, 618
         }

@@ -15,8 +15,9 @@ namespace PocoPanel.Infrastructure.Identity.Services
     public class GetUserService : IGetUser
     {
         private readonly IdentityContext _IdentityContext;
-        public readonly IConvert _IConvert;
+        private readonly IConvert _IConvert;
         private readonly IMemoryCache _cache;
+
         public GetUserService(IdentityContext IdentityContext, IMemoryCache cache, IConvert iConvert)
         {
             _IdentityContext = IdentityContext;

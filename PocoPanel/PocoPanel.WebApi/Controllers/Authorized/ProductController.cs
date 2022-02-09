@@ -8,24 +8,32 @@ using PocoPanel.Application.Features.Products.Commands.CreateProduct;
 using PocoPanel.Application.Features.Products.Commands.DeleteProductById;
 using PocoPanel.Application.Features.Products.Commands.UpdateProduct;
 using PocoPanel.Application.Features.Products.Queries.GetAllProducts;
+using PocoPanel.Application.Features.Products.Queries.GetAllProductsByPage;
 using PocoPanel.Application.Features.Products.Queries.GetProductById;
 
-namespace PocoPanel.WebApi.Controllers.Admin
+namespace PocoPanel.WebApi.Controllers.Authorized
 {
     [ApiController]
-    [Route("Admin/[controller]")]
-    [Authorize(Roles = "Admin")]
+    [Route("[controller]")]
+    [Authorize]
     public class ProductController : BaseApiController
     {
 
-        // GET: <controller>
-        [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] GetAllProductsParameter filter)
+        // Post: /<GetAllProductsByPage>/
+        [HttpPost("GetAllProductsByPage")]
+        public async Task<IActionResult> GetAllProductsByPage([FromQuery] GetAllProductsByPageQuery filter)
         {
-            return Ok(await Mediator.Send(new GetAllProductsQuery() { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
+            return Ok(await Mediator.Send(new GetAllProductsByPageQuery() { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
         }
 
-        // GET api/<GetProduct>/5
+        // Post: /<GetAllProducts>/
+        [HttpPost("GetAllProducts")]
+        public async Task<IActionResult> GetAllProducts()
+        {
+            return Ok(await Mediator.Send(new GetAllProductsQuery() { }));
+        }
+
+        // Post /<GetProduct>/5
         [HttpPost("GetProduct/{id}")]
         public async Task<IActionResult> GetProduct(int id)
         {
@@ -33,14 +41,19 @@ namespace PocoPanel.WebApi.Controllers.Admin
         }
 
         // POST <CreateProduct>
+        //[ApiExplorerSettings(IgnoreApi = true)]
+        [Authorize(Roles = "Admin")]
         [HttpPost("CreateProduct")]
         public async Task<IActionResult> CreateProduct(CreateProductCommand command)
         {
             return Ok(await Mediator.Send(command));
         }
 
+        /*
         // PUT api/<controller>/5
         [HttpPut("{id}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Put(int id, UpdateProductCommand command)
         {
             if (id != command.Id)
@@ -52,9 +65,12 @@ namespace PocoPanel.WebApi.Controllers.Admin
 
         // DELETE api/<controller>/5
         [HttpDelete("{id}")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
         }
+        */
     }
 }
