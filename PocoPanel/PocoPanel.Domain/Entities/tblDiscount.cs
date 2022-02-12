@@ -27,6 +27,15 @@ namespace PocoPanel.Domain.Entities
         [Required]
         public string DiscountCode { get; set; }
 
+        [Required]
+        public bool Enable { get; set; }
+
+        [Required]
+        public DateTime StartDate { get; set; }
+
+        [Required]
+        public DateTime EndDate { get; set; }
+
         #region Foreign Key
 
         public virtual int? tblProductId { get; set; }

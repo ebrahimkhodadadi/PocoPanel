@@ -16,6 +16,7 @@ namespace PocoPanel.WebApi.Controllers.Authorized
     [ApiController]
     [Route("[controller]")]
     [Authorize]
+    //[ApiExplorerSettings(IgnoreApi = true)]
     public class ProductController : BaseApiController
     {
 
@@ -37,11 +38,13 @@ namespace PocoPanel.WebApi.Controllers.Authorized
         [HttpPost("GetProduct/{id}")]
         public async Task<IActionResult> GetProduct(int id)
         {
+            if (id == null || id == 0)
+                return BadRequest();
+                
             return Ok(await Mediator.Send(new GetProductByIdQuery { Id = id }));
         }
 
         // POST <CreateProduct>
-        //[ApiExplorerSettings(IgnoreApi = true)]
         [Authorize(Roles = "Admin")]
         [HttpPost("CreateProduct")]
         public async Task<IActionResult> CreateProduct(CreateProductCommand command)

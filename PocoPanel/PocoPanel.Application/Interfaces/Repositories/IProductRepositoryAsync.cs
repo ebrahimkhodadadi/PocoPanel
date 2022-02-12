@@ -12,6 +12,6 @@ namespace PocoPanel.Application.Interfaces.Repositories
         public Task<bool> IsExistProductKindId(int tblProductKindId);
         public Task<bool> IsExistProviderId(int tblProviderId);
         public Task<GetProductViewModel> GetProductViewModelByIdAsync(int id, string currency);
-        public Task<IEnumerable<GetProductViewModel>> GetProductViewModelByIdAsync(string currency);
+        public Task<IEnumerable<GetProductViewModel>> GetProductViewModelAsync(string currency);
     }
 }

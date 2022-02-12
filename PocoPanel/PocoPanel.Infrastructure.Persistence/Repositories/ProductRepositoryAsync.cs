@@ -19,7 +19,7 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
     {
         private readonly DbSet<tblProduct> _products;
         private readonly ApplicationDbContext _dbContext;
-        public readonly IConvert _IConvert;
+        private readonly IConvert _IConvert;
 
         public ProductRepositoryAsync(ApplicationDbContext dbContext, IConvert iConvert) : base(dbContext)
         {
@@ -57,13 +57,14 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
                 Decending = product.Decending,
                 Description = product.Description,
                 Price = _IConvert.RoundNumber(product.tblProductPriceKind.FirstOrDefault(product => product?.tblPriceKind?.Name == currency).Price),
-                Quantity = product.Quantity,
+                Min = product.Min,
+                Max = product.Max,
                 MainCategory = product.tblProductKind?.tblProductKinds?.Name,
                 Category = product?.tblProductKind.Name
             };
         }
 
-        public async Task<IEnumerable<GetProductViewModel>> GetProductViewModelByIdAsync(string currency)
+        public async Task<IEnumerable<GetProductViewModel>> GetProductViewModelAsync(string currency)
         {
             var products = await _dbContext.tblProduct
                 .Include(product => product.tblProductKind)
@@ -82,7 +83,8 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
                 Decending = product.Decending,
                 Description = product.Description,
                 Price = _IConvert.RoundNumber(product?.tblProductPriceKind.FirstOrDefault(tblproduct => tblproduct?.tblPriceKind?.Name == currency)?.Price),
-                Quantity = product.Quantity,
+                Min = product.Min,
+                Max = product.Max,
                 MainCategory = product.tblProductKind?.tblProductKinds?.Name,
                 Category = product?.tblProductKind.Name
             });

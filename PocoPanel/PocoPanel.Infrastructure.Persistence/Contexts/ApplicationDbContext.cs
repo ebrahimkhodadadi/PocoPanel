@@ -32,7 +32,8 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
                 {
                     case EntityState.Added:
                         entry.Entity.Created = _dateTime.NowUtc;
-                        entry.Entity.CreatedBy = _authenticatedUser.UserId;
+                        if(string.IsNullOrWhiteSpace(entry.Entity.CreatedBy))
+                            entry.Entity.CreatedBy = _authenticatedUser.UserId;
                         break;
                     case EntityState.Modified:
                         entry.Entity.LastModified = _dateTime.NowUtc;
@@ -44,6 +45,19 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
         }
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            #region DateTime
+            foreach (var entity in builder.Model.GetEntityTypes())
+            {
+                var dateTimeProps = entity.GetProperties()
+                    .Where(p => p.PropertyInfo.PropertyType == typeof(DateTime));
+                foreach (var prop in dateTimeProps)
+                {
+                    builder.Entity(entity.Name).Property(prop.Name).HasColumnType("datetime2");
+                }
+
+            }
+            #endregion
+            
             #region decimal
             //All Decimals will have 18,6 Range
             foreach (var property in builder.Model.GetEntityTypes()
@@ -104,7 +118,10 @@ namespace PocoPanel.Infrastructure.Persistence.Contexts
                 new tblStatus() { Id = 2, Name = "Accepted" },
                 new tblStatus() { Id = 3, Name = "Rejected" },
                 new tblStatus() { Id = 4, Name = "Completed" },
-                new tblStatus() { Id = 5, Name = "Unknown" }
+                new tblStatus() { Id = 5, Name = "Unknown" },
+                new tblStatus() { Id = 6, Name = "InProgress" },
+                new tblStatus() { Id = 7, Name = "Cancled" },
+                new tblStatus() { Id = 8, Name = "ReturnedMony" }
                 );
             #endregion
 

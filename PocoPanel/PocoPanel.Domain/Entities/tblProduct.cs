@@ -31,7 +31,10 @@ namespace PocoPanel.Domain.Entities
         public decimal Price { get; set; }
 
         [Required]
-        public int Quantity { get; set; }
+        public int Min { get; set; }
+
+        [Required]
+        public int Max { get; set; }
 
         #region Foreign Key
         [Required]

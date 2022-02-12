@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PocoPanel.Infrastructure.Persistence.Contexts;
 
 namespace PocoPanel.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220211131657_tblDiscount-StartDate-EndDate")]
+    partial class tblDiscountStartDateEndDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -163,9 +165,6 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProviderOrderId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -189,8 +188,6 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProviderOrderId");
 
                     b.HasIndex("tblOrderId");
 
@@ -525,10 +522,6 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("PocoPanel.Domain.Entities.tblOrderDetail", b =>
                 {
-                    b.HasOne("PocoPanel.Domain.Entities.tblProvider", "tblProvider")
-                        .WithMany()
-                        .HasForeignKey("ProviderOrderId");
-
                     b.HasOne("PocoPanel.Domain.Entities.tblOrder", "tblOrder")
                         .WithMany("tblOrderDetails")
                         .HasForeignKey("tblOrderId");

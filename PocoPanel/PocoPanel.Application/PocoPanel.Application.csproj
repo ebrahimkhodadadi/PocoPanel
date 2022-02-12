@@ -19,5 +19,12 @@
   <ItemGroup>
     <ProjectReference Include="..\PocoPanel.Domain\PocoPanel.Domain.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Features\Factors\Commands\DeleteFactor\" />
+    <Folder Include="Features\Factors\Commands\UpdateFactor\" />
+    <Folder Include="Features\Orderdetails\Commands\" />
+    <Folder Include="Features\Order\Commands\" />
+    <Folder Include="Features\Order\Queries\" />
+  </ItemGroup>
 
 </Project>

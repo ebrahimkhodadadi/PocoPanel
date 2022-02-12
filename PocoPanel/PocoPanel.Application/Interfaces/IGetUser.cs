@@ -9,7 +9,7 @@ namespace PocoPanel.Application.Interfaces
     public interface IGetUser
     {
         public Task<string> GetUserID(string ApiToken);
-
         public Task<GetUserProfile> GetUserByToken(string ApiToken);
+        //public Task<bool> GetUserByPublicCode(string publicCode);
     }
 }

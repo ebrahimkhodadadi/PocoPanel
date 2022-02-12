@@ -53,11 +53,17 @@ namespace PocoPanel.Infrastructure.Identity.Services
 
             return (new GetUserProfile()
             {
+                UserID = user.Id,
                 Email = user.Email,
                 PublicCode = user.PublicCode,
                 Credit = _IConvert.RoundNumber(user.Credit),
                 Currency = user.Currency
             });
         }
+
+        //public async Task<User> GetUserByPublicCode(string publicCode)
+        //{
+        //    return await _IdentityContext.Users.FirstOrDefaultAsync(User => User.PublicCode == publicCode);
+        //}
     }
 }

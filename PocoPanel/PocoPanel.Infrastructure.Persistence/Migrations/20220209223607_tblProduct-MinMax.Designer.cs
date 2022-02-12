@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PocoPanel.Infrastructure.Persistence.Contexts;
 
 namespace PocoPanel.Infrastructure.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220209223607_tblProduct-MinMax")]
+    partial class tblProductMinMax
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -60,12 +62,6 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.Property<decimal>("DiscountValue")
                         .HasColumnType("decimal(18,6)");
 
-                    b.Property<bool>("Enable")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
                     b.Property<bool>("IsPercent")
                         .HasColumnType("bit");
 
@@ -78,9 +74,6 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("StartDate")
-                        .HasColumnType("datetime2");
 
                     b.Property<int?>("tblProductId")
                         .HasColumnType("int");
@@ -163,9 +156,6 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.Property<string>("LastModifiedBy")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProviderOrderId")
-                        .HasColumnType("int");
-
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
 
@@ -182,15 +172,14 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
                     b.Property<int?>("tblOrderId")
                         .HasColumnType("int");
 
-                    b.Property<int>("tblProductId")
+                    b.Property<int?>("tblProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("tblStatusId")
+                    b.Property<int?>("tblStatusId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProviderOrderId");
 
                     b.HasIndex("tblOrderId");
 
@@ -525,19 +514,13 @@ namespace PocoPanel.Infrastructure.Persistence.Migrations
 
             modelBuilder.Entity("PocoPanel.Domain.Entities.tblOrderDetail", b =>
                 {
-                    b.HasOne("PocoPanel.Domain.Entities.tblProvider", "tblProvider")
-                        .WithMany()
-                        .HasForeignKey("ProviderOrderId");
-
                     b.HasOne("PocoPanel.Domain.Entities.tblOrder", "tblOrder")
                         .WithMany("tblOrderDetails")
                         .HasForeignKey("tblOrderId");
 
                     b.HasOne("PocoPanel.Domain.Entities.tblProduct", "tblProduct")
                         .WithMany()
-                        .HasForeignKey("tblProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("tblProductId");
 
                     b.HasOne("PocoPanel.Domain.Entities.tblStatus", "tblStatus")
                         .WithMany("tblOrderDetails")

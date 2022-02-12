@@ -21,6 +21,7 @@ namespace PocoPanel.WebApi.Controllers.v1
             var user = await _IGetUser.GetUserByToken(ApiToken);
             if (user == null)
                 return NotFound("User Not Found!");
+                
             return Ok(user);
         }
 

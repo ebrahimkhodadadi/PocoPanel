@@ -11,7 +11,7 @@ using PocoPanel.Application.Features.Products.Queries.GetAllProducts;
 namespace PocoPanel.WebApi.Controllers.v1
 {
     [ApiController]
-    [Route("[controller]")]
+    [ApiVersion("1.0")]
     public class ProductApiController : BaseApiController
     {
         private readonly IGetUser _IGetUser;
@@ -21,12 +21,15 @@ namespace PocoPanel.WebApi.Controllers.v1
         }
 
         // Post /<GetProduct>/5
-        [HttpPost("GetProduct/{id}")]
+        [HttpPost("GetProduct")]
         public async Task<IActionResult> GetProduct(string ApiToken, int id)
         {
             var user = await _IGetUser.GetUserByToken(ApiToken);
             if (user == null)
                 return NotFound("User Not Found!");
+
+            if (id == null || id == 0)
+                return BadRequest();
 
             return Ok(await Mediator.Send(new GetProductByIdQuery { Id = id, Currency = user.Currency }));
         }

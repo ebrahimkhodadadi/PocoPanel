@@ -12,7 +12,8 @@ namespace PocoPanel.Application.DTOs.Products
         public string Description { get; set; }
         public double? Decending { get; set; }
         public decimal? Price { get; set; }
-        public int? Quantity { get; set; }
+        public int? Min { get; set; }
+        public int? Max { get; set; }
         public string MainCategory { get; set; }
         public string Category { get; set; }
     }

@@ -33,7 +33,7 @@ namespace PocoPanel.Application.Features.Products.Queries.GetAllProducts
                 else
                     currency = _authenticatedUser.Currency;
 
-                var productViewModel = await _productRepository.GetProductViewModelByIdAsync(currency);
+                var productViewModel = await _productRepository.GetProductViewModelAsync(currency);
                 if (productViewModel.Count() > 0)
                     return new Response<IEnumerable<GetProductViewModel>>(productViewModel);
 

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Text;
 
 namespace PocoPanel.Domain.Entities
@@ -29,15 +30,20 @@ namespace PocoPanel.Domain.Entities
         public int Quantity { get; set; }
 
         #region Foreign Key
-        public virtual int? tblProductId { get; set; }
+        [Required]
+        public virtual int tblProductId { get; set; }
         public virtual tblProduct tblProduct { get; set; }
 
         public virtual int? tblOrderId { get; set; }
         public virtual tblOrder tblOrder { get; set; }
 
         [Required]
-        public virtual int? tblStatusId { get; set; }
+        public virtual int tblStatusId { get; set; }
         public virtual tblStatus tblStatus { get; set; }
+
+        [ForeignKey("ProviderOrderId")]
+        public virtual tblProvider tblProvider { get; set; }
+        public virtual int? ProviderOrderId { get; set; }
         #endregion
     }
 }
