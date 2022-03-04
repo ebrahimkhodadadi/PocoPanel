@@ -16,5 +16,6 @@ namespace PocoPanel.Application.DTOs.Products
         public int? Max { get; set; }
         public string MainCategory { get; set; }
         public string Category { get; set; }
+        public string Quality { get; set; }
     }
 }

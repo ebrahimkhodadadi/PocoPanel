@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using PocoPanel.Application.DTOs.Account;
+using PocoPanel.Domain.Entities;
 
 namespace PocoPanel.Application.Interfaces
 {
@@ -10,6 +11,6 @@ namespace PocoPanel.Application.Interfaces
     {
         public Task<string> GetUserID(string ApiToken);
         public Task<GetUserProfile> GetUserByToken(string ApiToken);
-        //public Task<bool> GetUserByPublicCode(string publicCode);
+        public Task<GetUserProfile> GetUserByPublicCode(string publicCode);
     }
 }

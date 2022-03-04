@@ -16,6 +16,7 @@ namespace PocoPanel.Application.Features.Products.Queries.GetAllProductsByPage
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public bool? IsDeleted { get; set; }
     }
     public class GetAllProductsQueryHandler : IRequestHandler<GetAllProductsByPageQuery, PagedResponse<IEnumerable<GetAllProductsViewModel>>>
     {
@@ -30,9 +31,7 @@ namespace PocoPanel.Application.Features.Products.Queries.GetAllProductsByPage
         public async Task<PagedResponse<IEnumerable<GetAllProductsViewModel>>> Handle(GetAllProductsByPageQuery request, CancellationToken cancellationToken)
         {
             var validFilter = _mapper.Map<GetAllProductsParameter>(request);
-            var product = await _productRepository.GetPagedReponseAsync(validFilter.PageNumber, validFilter.PageSize);
-            var productViewModel = _mapper.Map<IEnumerable<GetAllProductsViewModel>>(product);
-            return new PagedResponse<IEnumerable<GetAllProductsViewModel>>(productViewModel, validFilter.PageNumber, validFilter.PageSize);
+            return await _productRepository.GetAllProductsPagedReponseAsync(validFilter, request.IsDeleted);
         }
     }
 }

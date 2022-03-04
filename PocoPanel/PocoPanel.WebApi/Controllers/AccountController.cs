@@ -34,11 +34,11 @@ namespace PocoPanel.WebApi.Controllers
         {
             return Ok(await _accountService.RegisterAsync(request, _Website.API));
         }
-        [HttpPost("confirm-email")]
+        [HttpGet("confirm-email")]
         public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
         {
-            var origin = Request.Headers["origin"];
-            return Ok(await _accountService.ConfirmEmailAsync(userId, code));
+            var getResponse = await _accountService.ConfirmEmailAsync(userId, code, _Website.UI);
+            return Redirect(getResponse);
         }
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest model)

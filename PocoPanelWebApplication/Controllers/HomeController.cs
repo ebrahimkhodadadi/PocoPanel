@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using PocoPanelWebApplication.DTOs.Account;
 using PocoPanelWebApplication.Models;
 using System;
 using System.Collections.Generic;
@@ -23,15 +24,32 @@ namespace PocoPanelWebApplication.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult SignIn()
         {
             return View();
         }
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        [Route("Home/SignIn/{name}")]
+        public IActionResult SignIn(string name)
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (name == "true")
+                ViewBag.canSign = true;
+            else if (name == "false")
+                ViewBag.canSign = false;
+            else
+                return NotFound();
+
+            return View();
+        }
+
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        public IActionResult ForgotPassword()
+        {
+            return View();
         }
     }
 }

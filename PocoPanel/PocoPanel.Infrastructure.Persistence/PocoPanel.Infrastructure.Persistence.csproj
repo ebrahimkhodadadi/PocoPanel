@@ -8,6 +8,10 @@
   <ItemGroup>
     <Compile Remove="Migrations\20220207194821_TelegramInstagramSeed.cs" />
     <Compile Remove="Migrations\20220207194821_TelegramInstagramSeed.Designer.cs" />
+    <Compile Remove="Migrations\20220221130459_tblProvider-Code.cs" />
+    <Compile Remove="Migrations\20220221130459_tblProvider-Code.Designer.cs" />
+    <Compile Remove="Migrations\20220224070953_tblQuality.cs" />
+    <Compile Remove="Migrations\20220224070953_tblQuality.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -97,6 +97,14 @@ namespace PocoPanel.Infrastructure.Identity
                         },
                     };
                 });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("CorsPolicy",
+                    builder => builder.AllowAnyOrigin()
+                        .AllowAnyMethod()
+                        .AllowAnyHeader());
+            });
         }
     }
 }

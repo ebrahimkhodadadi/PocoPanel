@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using PocoPanel.Application.DTOs.Products;
 using PocoPanel.Application.Features.Products.Commands.CreateProduct;
+using PocoPanel.Application.Features.Products.Commands.PriceProduct;
 using PocoPanel.Application.Features.Products.Queries.GetAllProducts;
 using PocoPanel.Application.Features.Products.Queries.GetAllProductsByPage;
 using PocoPanel.Domain.Entities;
@@ -16,6 +18,7 @@ namespace PocoPanel.Application.Mappings
             CreateMap<tblProduct, GetAllProductsViewModel>().ReverseMap();
             CreateMap<CreateProductCommand, tblProduct>();
             CreateMap<GetAllProductsByPageQuery, GetAllProductsParameter>();
+            CreateMap<PriceProductCommand ,ListProductPriceViewModel>();
         }
     }
 }

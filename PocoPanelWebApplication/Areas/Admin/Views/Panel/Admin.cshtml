@@ -1,0 +1,192 @@
+﻿@model IEnumerable<PocoPanelWebApplication.DTOs.Order.AcceptOrderDetailViewModel>
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Index";
+}
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1>Dashboard</h1>
+        </div>
+        <div class="row">
+            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="card card-statistic-1">
+                    <div class="card-icon bg-primary">
+                        <i class="far fa-user"></i>
+                    </div>
+                    <div class="card-wrap">
+                        <div class="card-header">
+                            <h4>Total Admin</h4>
+                        </div>
+                        <div class="card-body">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="card card-statistic-1">
+                    <div class="card-icon bg-danger">
+                        <i class="far fa-newspaper"></i>
+                    </div>
+                    <div class="card-wrap">
+                        <div class="card-header">
+                            <h4>News</h4>
+                        </div>
+                        <div class="card-body">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="card card-statistic-1">
+                    <div class="card-icon bg-warning">
+                        <i class="far fa-file"></i>
+                    </div>
+                    <div class="card-wrap">
+                        <div class="card-header">
+                            <h4>Reports</h4>
+                        </div>
+                        <div class="card-body">0</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6 col-sm-6 col-12">
+                <div class="card card-statistic-1">
+                    <div class="card-icon bg-success">
+                        <i class="fas fa-circle"></i>
+                    </div>
+                    <div class="card-wrap">
+                        <div class="card-header">
+                            <h4>Online Users</h4>
+                        </div>
+                        <div class="card-body">0</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Factor Detail</h4>
+                        <div class="card-header-action">
+                            <form>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search">
+                                    <div class="input-group-btn">
+                                        <button class="btn btn-primary"><i class="fas fa-search"></i></button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="sortable-table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <i class="fas fa-th"></i>
+                                        </th>
+                                        <th>شماره پیگیری</th>
+                                        <th>شماره فاکتور</th>
+                                        <th>عملیات</th>
+                                        <th>تاریخ فاکتور</th>
+                                        <th>قیمت</th>
+                                        <th>جزئیات</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model?.Count() > 0)
+                                        foreach (var OrderDetail in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="sort-handler">
+                                                        <i class="fas fa-th"></i>
+                                                    </div>
+                                                </td>
+                                                <td>@OrderDetail.OrderId</td>
+                                                <td>@OrderDetail.OrderDetailId</td>
+                                                <td>
+                                                    <a class="btn btn-success btn-action"
+                                                       onclick="AcceptFactor(@OrderDetail.OrderDetailId);">
+                                                        <i class="fas fa-check"></i>
+                                                    </a>
+                                                    <button class="btn btn-danger btn-action" disabled
+                                                            data-toggle="modal" data-target="#RejectFactorModal">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                </td>
+                                                <td>@OrderDetail.DateTime</td>
+                                                <td>@OrderDetail.Price</td>
+                                                <td><a href="#" class="btn btn-secondary">Detail</a></td>
+                                            </tr>
+                                        }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    @{
+                        if (Model?.Count() <= 0)
+                        {
+                            <div class="alert alert-info text-center">
+                                <div class="alert-title">وضعیت فاکتور ها</div>
+                                فاکتوری جهت تایید موجود نمی باشد  <i class="fas fa-info-circle"></i>
+                            </div>
+                        }
+                        else if (Model == null)
+                        {
+                            <div class="alert alert-danger text-center">
+                                <div class="alert-title">خطا!</div>
+                                دریافت اطلاعات فاکتور ها با خطا مواجه شده است
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("website").GetSection("API").Value);
+
+        function AcceptFactor(id) {
+            swal({
+                title: 'درخواست تایید فاکتور',
+                text: 'آیا از تایید فاکتور با شماره ' + id + ' اطمینان دارید؟',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true,
+                async: false
+            })
+                .then((willAccept) => {
+                    if (willAccept) {
+                        ShowLoader();
+                        $.ajax({
+                            url: "/Admin/Panel/AcceptFactor/" + id,
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            datatype: JSON,
+                            //async: false,
+                            success: function (data) {
+                                swal(data.responseJSON.value.message, {
+                                    icon: 'success',
+                                })
+                                    .then(() => {
+                                        location.reload();
+                                    });
+                            },
+                            error: function (data) {
+                                swal('خطا در ثبت درخواست', data.responseJSON.value.message, 'error');
+                            },
+                            complete: function (data) { HideLoader(); }
+                        });
+                    }
+                    HideLoader();
+                });
+            }
+    </script>
+}

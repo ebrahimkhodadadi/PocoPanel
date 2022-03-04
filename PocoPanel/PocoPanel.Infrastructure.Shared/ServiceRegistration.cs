@@ -11,9 +11,11 @@ namespace PocoPanel.Infrastructure.Shared
     {
         public static void AddSharedInfrastructure(this IServiceCollection services, IConfiguration _config)
         {
+            services.AddMvc();
             services.Configure<MailSettings>(_config.GetSection("MailSettings"));
             services.Configure<WebsiteModel>(_config.GetSection("website"));
             services.AddTransient<IDateTimeService, DateTimeService>();
+            services.AddTransient<IViewRenderService, RenderViewToString>();
             services.AddTransient<IEmailService, EmailService>();
             services.AddScoped<IConvert, ConvertService>();
         }

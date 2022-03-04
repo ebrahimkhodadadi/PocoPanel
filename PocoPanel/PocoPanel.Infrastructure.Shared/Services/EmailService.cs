@@ -35,7 +35,7 @@ namespace PocoPanel.Infrastructure.Shared.Services
                 builder.HtmlBody = request.Body;
                 email.Body = builder.ToMessageBody();
                 using var smtp = new SmtpClient();
-                smtp.Connect(_mailSettings.SmtpHost, _mailSettings.SmtpPort, SecureSocketOptions.None);
+                smtp.Connect(_mailSettings.SmtpHost, _mailSettings.SmtpPort, SecureSocketOptions.StartTls);
                 smtp.Authenticate(_mailSettings.SmtpUser, _mailSettings.SmtpPass);
                 await smtp.SendAsync(email);
                 smtp.Disconnect(true);
@@ -44,7 +44,7 @@ namespace PocoPanel.Infrastructure.Shared.Services
             catch (System.Exception ex)
             {
                 _logger.LogError(ex.Message, ex);
-                throw new ApiException(ex.Message);
+                throw new ApiException("Use Forgot Password Button to Active your account");
             }
         }
     }

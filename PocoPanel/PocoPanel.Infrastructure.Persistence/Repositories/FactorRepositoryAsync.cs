@@ -1,6 +1,8 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using PocoPanel.Application.DTOs.Factors;
+using PocoPanel.Application.Exceptions;
 using PocoPanel.Application.Features.Factors.Commands.CreateFactor;
 using PocoPanel.Application.Interfaces;
 using PocoPanel.Application.Interfaces.Repositories;
@@ -9,7 +11,9 @@ using PocoPanel.Domain.Entities;
 using PocoPanel.Infrastructure.Persistence.Contexts;
 using PocoPanel.Infrastructure.Persistence.Providers;
 using PocoPanel.Infrastructure.Shared.Enums;
+using PocoPanel.WebApi.Models;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -22,26 +26,18 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
         private readonly IConvert _IConvert;
         private readonly IGetUser _IGetUser;
         private IProviderAsync _IProvicerAsync;
+        private readonly IEmailService _emailService;
+        private readonly WebsiteModel _Website;
         #endregion
 
         #region Constructor
-        public FactorRepositoryAsync(ApplicationDbContext dbContext, IConvert iConvert, IGetUser iGetUser)
+        public FactorRepositoryAsync(ApplicationDbContext dbContext, IConvert iConvert, IGetUser iGetUser, IEmailService emailService, IOptions<WebsiteModel> website)
         {
             _dbContext = dbContext;
             _IConvert = iConvert;
             _IGetUser = iGetUser;
-        }
-        #endregion
-
-        #region Load Provider
-        public void LoadProvider(tblProvider tblProvider)
-        {
-            switch(tblProvider.Url)
-            {
-                case @"https://instatell.ir/api/v1":
-                    _IProvicerAsync = new InstatellProviderAsync(tblProvider);
-                    break;
-            }
+            _emailService = emailService;
+            _Website = website.Value;
         }
         #endregion
 
@@ -72,15 +68,26 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
             {
                 CreatedBy = CreateFactorCommand.CreatedBy,
                 Description = CreateFactorCommand.Description,
-                SocialUserName = CreateFactorCommand.SocialUserName,
+                SocialUserName = _IConvert.GetSocialUserName(CreateFactorCommand.SocialUserName),
                 Quantity = CreateFactorCommand.Quantity,
                 tblProductId = CreateFactorCommand.ServiceId,
                 tblOrderId = order.Id,
-                TotallPrice = tblProductPriceKind?.Price ?? 0,
+                TotallPrice = _IConvert.RoundNumber(tblProductPriceKind?.Price ?? 0) ,
                 tblStatusId = (int)Status.Waiting,
             });
 
             await _dbContext.SaveChangesAsync();
+
+            #region Send Email To Admin
+            //send Active Account Email
+            await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest()
+            {
+                From = "infoEmail@pocopanel.ir",
+                To = _Website.AdminEmail,
+                Body = $"فاکتور جدید با شماره پیگیری {order.Id} به ثبت رسید لطفا جهت تایید به پنل خود مراجعه نمایید",
+                Subject = "PocoPanel Factor"
+            });
+            #endregion
 
             return order;
         }
@@ -103,25 +110,25 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
                 .FirstOrDefaultAsync(orderDetails => orderDetails.Id == orderDetailID);
 
             if (orderDetail == null)
-                return new Response<bool>(false, "سفارش مورد نظر یافت نشد.");
+                throw new ApiException("سفارش مورد نظر یافت نشد.");
 
             if (orderDetail.tblProduct.tblProvider == null)
-                return new Response<bool>(false, "سایت پذیرنده ای برای این محصول یافت نشد.");
+                throw new ApiException("سایت پذیرنده ای برای این محصول یافت نشد.");
 
             //Fill IProvider
-            LoadProvider(orderDetail.tblProduct.tblProvider);
+            _IProvicerAsync = ProviderHelper.GetProvider(orderDetail.tblProduct.tblProvider);
 
             //check if Provider charge is enough
             var balance = await _IProvicerAsync.GetCredit();
             if (balance.balance == 0)
-                return new Response<bool>(false, "موجودی حساب شما در سایت پذیرنده صفر میباشد.");
+                throw new ApiException("موجودی حساب شما در سایت پذیرنده صفر میباشد.");
 
             var product = await _IProvicerAsync.GetProductById(orderDetail.tblProduct?.ProviderProductID ?? 0);
             if (product == null)
-                return new Response<bool>(false, "محصول مورد نظر در سایت پذیرنده یافت نشد.");
+                throw new ApiException("محصول مورد نظر در سایت پذیرنده یافت نشد.");
 
-            if(Convert.ToDecimal(product.rate * orderDetail.Quantity) > balance.balance)
-                return new Response<bool>(false, "موجودی حساب شما در سایت پذیرنده کمتر از مقدار درخواستی میباشد.");
+            if (Convert.ToDecimal(product.rate * orderDetail.Quantity) > balance.balance)
+                throw new ApiException("موجودی حساب شما در سایت پذیرنده کمتر از مقدار درخواستی میباشد.");
 
 
             //ثبت سفارش و تغییر وضعیت سفارش
@@ -135,11 +142,13 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
             if (createOrderStatus.status == "success" && createOrderStatus.order != 0)
             {
                 orderDetail.tblStatusId = (int)Status.InProgress;
+                orderDetail.ProviderOrderId = createOrderStatus.order;
+
                 await _dbContext.SaveChangesAsync();
-                return new Response<bool>(true, "سفارش مورد با موفقیت تایید شد."); 
+                return new Response<bool>(true, $"سفارش مورد نظر با شماره پیگیری از سایت پذیرنده {createOrderStatus.order} با موفقیت تایید شد.");
             }
             else
-                return new Response<bool>(true, "ثبت سفارش از طرف سایت پذیرنده با خطا مواجه شد.");
+                throw new ApiException("ثبت سفارش از طرف سایت پذیرنده با خطا مواجه شد.");
         }
 
         public async Task<Response<bool>> RejectFactor(int orderDetailID, string reason)
@@ -147,15 +156,31 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
             //check if Order Exist
             var orderDetail = await _dbContext.tblOrderDetail.FindAsync(orderDetailID);
             if (orderDetail == null)
-                return new Response<bool>(false, "سفارش مورد نظر یافت نشد.");
+                throw new ApiException("سفارش مورد نظر یافت نشد.");
 
             orderDetail.tblStatusId = (int)Status.Rejected;
             await _dbContext.SaveChangesAsync();
 
             //ToDo: Send Customer Email
 
-            //ToDo: تغییر وضعیت سفارش
             return new Response<bool>(true, "سفارش مورد با موفقیت حذف شد.");
+        }
+
+        public async Task<IEnumerable<AcceptOrderDetailViewModel>> GetAllWaitingOrderDetailsAsync()
+        {
+            var orderDetail = await _dbContext.tblOrderDetail
+                .Include(tblOrderDetails => tblOrderDetails.tblOrder)
+                .ThenInclude(tblOrderDetails => tblOrderDetails.tblPriceKind)
+                .Where(tblOrderDetails => tblOrderDetails.tblStatusId == (int)Status.Waiting)
+                .ToListAsync();
+
+            return orderDetail.Select(orderDetails => new AcceptOrderDetailViewModel()
+            {
+                OrderId = orderDetails?.tblOrderId,
+                OrderDetailId = orderDetails.Id,
+                Price = _IConvert.RoundNumber(orderDetails.TotallPrice) + " " + orderDetails.tblOrder?.tblPriceKind?.Name,
+                DateTime = _IConvert.PersionDateTime(orderDetails.Created)
+            });
         }
         #endregion
     }

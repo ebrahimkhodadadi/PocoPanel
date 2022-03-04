@@ -52,12 +52,14 @@ namespace PocoPanel.WebApi
             }
             app.UseHttpsRedirection();
             app.UseRouting();
+            app.UseCors("CorsPolicy");
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseSwaggerExtension();
             app.UseErrorHandlingMiddleware();
             app.UseHealthChecks("/health");
             app.UseResponseCaching();
+
 
             #region Header Response
 
@@ -68,6 +70,7 @@ namespace PocoPanel.WebApi
              });
 
             #endregion
+
             app.UseEndpoints(endpoints =>
              {
                  endpoints.MapControllers();

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using PocoPanel.Application.Features.Factors.Commands.CreateFactor;
 using PocoPanel.Application.Wrappers;
+using PocoPanel.Application.DTOs.Factors;
 
 namespace PocoPanel.Application.Interfaces.Repositories
 {
@@ -16,5 +17,6 @@ namespace PocoPanel.Application.Interfaces.Repositories
         public Task<bool> IsExistProductId(int ServiceId);
         public Task<Response<bool>> AcceptFactor(int orderDetailID);
         public Task<Response<bool>> RejectFactor(int orderDetailID, string reason);
+        public Task<IEnumerable<AcceptOrderDetailViewModel>> GetAllWaitingOrderDetailsAsync();
     }
 }

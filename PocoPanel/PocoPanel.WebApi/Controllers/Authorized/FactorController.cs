@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using PocoPanel.Application.Features.Factors.Commands.Accept;
 using PocoPanel.Application.Features.Factors.Commands.Reject;
+using PocoPanel.Application.Features.Factors.Queries.GetAllWaitingOrderDetails;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,10 +27,18 @@ namespace PocoPanel.WebApi.Controllers.Authorized
 
        // POST<RejectFactor>
        [Authorize(Roles = "Admin")]
-       [HttpPost("RejectFactor")]
+       [HttpGet("RejectFactor")]
         public async Task<IActionResult> RejecteFactor([FromQuery]RejectFactorCommand command)
         {
             return Ok(await Mediator.Send(command));
+        }
+
+        // Get<RejectFactor>
+        [Authorize(Roles = "Admin")]
+        [HttpGet("GetAllWaitingOrderDetails")]
+        public async Task<IActionResult> GetAllWaitingOrderDetails()
+        {
+            return Ok(await Mediator.Send(new GetAllWaitingOrderDetailsQuery{ }));
         }
 
     }

@@ -6,7 +6,7 @@ namespace PocoPanel.Application.DTOs.Products
 {
     public class ProviderProductViewModel
     {
-        public int service { get; set; }
+        public int? service { get; set; }
         public string name { get; set; }
         public string category { get; set; }
         public double rate { get; set; }

@@ -24,7 +24,13 @@ namespace PocoPanel.Application.Features.Products.Commands.DeleteProductById
             {
                 var product = await _productRepository.GetByIdAsync(command.Id);
                 if (product == null) throw new ApiException($"Product Not Found.");
-                await _productRepository.DeleteAsync(product);
+
+                //True IsDelete
+                product.IsDelete = true;
+
+                await _productRepository.UpdateAsync(product);
+
+                //await _productRepository.DeleteAsync(product);
                 return new Response<int>(product.Id);
             }
         }

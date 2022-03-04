@@ -31,9 +31,9 @@ namespace PocoPanel.WebApi
                 .Build();
 
             //Initialize Logger
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(config)
-                .CreateLogger();
+            //Log.Logger = new LoggerConfiguration()
+            //    .ReadFrom.Configuration(config)
+            //    .CreateLogger();
 
             var host = CreateHostBuilder(args).Build().MigrateIdentityDbContext().MigrateApplicationDbContext();
 
@@ -55,7 +55,7 @@ namespace PocoPanel.WebApi
                     #region Application Context
                     var applicationDBContext = services.GetRequiredService<ApplicationDbContext>();
 
-                    await Infrastructure.Persistence.Seeds.DefualtCountry.SeedAsync(applicationDBContext);
+                    await Infrastructure.Persistence.Seeds.Defualt.SeedAsync(applicationDBContext);
                     #endregion
 
                     Log.Information("Finished Seeding Default Data");
@@ -75,7 +75,7 @@ namespace PocoPanel.WebApi
         }
         public static IHostBuilder CreateHostBuilder(string[] args) =>
             Host.CreateDefaultBuilder(args)
-            .UseSerilog() //Uses Serilog instead of default .NET Logger
+            //.UseSerilog() //Uses Serilog instead of default .NET Logger
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();

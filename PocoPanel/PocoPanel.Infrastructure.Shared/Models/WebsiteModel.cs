@@ -9,5 +9,6 @@ namespace PocoPanel.WebApi.Models
     {
         public string UI { get; set; }
         public string API { get; set; }
+        public string AdminEmail { get; set; }
     }
 }

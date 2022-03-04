@@ -1,0 +1,191 @@
+﻿@model PocoPanelWebApplication.DTOs.Account.RegisterRequestViewModel
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no"
+          name="viewport" />
+    <title>PocoPanel &mdash; Register</title>
+
+    <!-- General CSS Files -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+          crossorigin="anonymous" />
+    <link rel="stylesheet"
+          href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+          integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
+          crossorigin="anonymous" />
+
+    <!-- CSS Libraries -->
+    <link rel="stylesheet"
+          href="~/css/selectric.css" />
+
+    <!-- Template CSS -->
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/components.css" />
+</head>
+
+<body>
+    <div id="app">
+        <section class="section">
+            <div class="container mt-5">
+                <div class="row">
+                    <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
+                        <div class="login-brand">
+                            <img src="~/images/logo.png"
+                                 alt="logo"
+                                 width="100"
+                                 class="shadow-light rounded-circle" />
+                        </div>
+
+                        <div class="card card-primary">
+                            <div class="card-header"><h4>Register</h4></div>
+
+                            <div class="card-body">
+                                <form asp-controller="Auth" asp-action="Register" method="POST" class="needs-validation">
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label asp-for="FirstName"></label>
+                                            <input asp-for="FirstName"
+                                                   class="form-control"
+                                                   autofocus />
+                                            <span asp-validation-for="FirstName"></span>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label asp-for="LastName"></label>
+                                            <input asp-for="LastName"
+                                                   class="form-control" />
+                                            <span asp-validation-for="LastName"></span>
+                                        </div>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="Email"></label>
+                                        <input asp-for="Email" class="form-control" />
+                                        <div class="invalid-feedback"></div>
+                                        <span asp-validation-for="Email"></span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label asp-for="UserName"></label>
+                                        <input asp-for="UserName" class="form-control" />
+                                        <div class="invalid-feedback"></div>
+                                        <span asp-validation-for="UserName"></span>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label asp-for="Password" class="d-block"></label>
+                                            <input asp-for="Password"
+                                                   class="form-control pwstrength"
+                                                   data-indicator="pwindicator">
+                                            <div id="pwindicator" class="pwindicator">
+                                                <div class="bar"></div>
+                                                <div class="label"></div>
+                                            </div>
+                                            <span asp-validation-for="Password"></span>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label asp-for="ConfirmPassword" class="d-block"></label>
+                                            <input asp-for="ConfirmPassword"
+                                                   class="form-control" />
+                                            <span asp-validation-for="ConfirmPassword"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="form-group col-6">
+                                            <label asp-for="CountryID" class="d-block"></label>
+                                            <select asp-for="CountryID" class="form-control"></select>
+                                        </div>
+                                        <div class="form-group col-6">
+                                            <label asp-for="VisitorCode" class="d-block"></label>
+                                            <input asp-for="VisitorCode"
+                                                   class="form-control" />
+                                        </div>
+                                    </div>
+                                    <div class=" my-3">
+                                        @if (ViewBag.Error != null)
+                                        {<strong class="text-danger"> @ViewBag.Error </strong>}
+                                </div>
+                                <div class="form-group">
+                                    <div class="custom-control custom-checkbox">
+                                        <input type="checkbox"
+                                               name="agree"
+                                               class="custom-control-input"
+                                               id="agree" />
+                                        <label class="custom-control-label" for="agree">I agree with the terms and conditions</label>
+                                    </div>
+                                </div>
+
+                                <recaptcha />
+
+                                <div class="form-group">
+                                    <button type="submit"
+                                            id="btnRegister"
+                                            class="btn btn-primary btn-lg btn-block"
+                                            disabled="disabled">
+                                        Register
+                                    </button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="simple-footer">Copyright &copy; pocopanel</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- General JS Scripts -->
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+    <script src="~/js/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="~/js/bootstrap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.nicescroll/3.7.6/jquery.nicescroll.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+    <script src="~/js/stisla.js"></script>
+
+    <!-- JS Libraies -->
+    <script src="~/js/jquery.pwstrength.min.js"></script>
+    <script src="~/js/jquery.selectric.min.js"></script>
+
+    <!-- Template JS File -->
+    <script src="~/js/scripts.js"></script>
+    <script src="~/js/custom.js"></script>
+
+    <!-- Fill Country Script -->
+    <script>
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("website").GetSection("API").Value);
+        $(document).ready(function () {
+            $.ajax({
+                url: commonUrl + "/v1/ProfileApi/GetListCountries",
+                type: "GET",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                cache: true,
+                success: function (result) {
+                    $(result).each(function () {
+                        $(this.data).each(function () {
+                            $("#CountryID").append($("<option></option>").val(this.id).html(this.name));
+                        });
+                    });
+                },
+                error: function (data) { $("#CountryID").append($("<option></option>").val(106).html("Iran, Islamic Republic of")); }
+            });
+        });
+    </script>
+
+    <!-- Page Specific JS File -->
+    <script src="~/js/page/auth-register.js"></script>
+</body>
+</html>
+
+

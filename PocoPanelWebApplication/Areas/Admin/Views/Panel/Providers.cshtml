@@ -1,0 +1,133 @@
+﻿@model IEnumerable<PocoPanelWebApplication.DTOs.Providers.ProvidersViewModel>
+@using Microsoft.Extensions.Configuration
+@inject IConfiguration Configuration
+
+@{
+    ViewData["Title"] = "Providers";
+}
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1>Providers</h1>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Providers</h4>
+                        <div class="card-header-action"></div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped" id="sortable-table">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">
+                                            <span>کد شناسایی</span>
+                                        </th>
+                                        <th>آدرس</th>
+                                        <th>داکیومنت</th>
+                                        <th>اعتبار</th>
+                                        <th>دریافت محصولات</th>
+                                        <th>ویرایش</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @if (Model?.Count() > 0)
+                                        foreach (var providers in Model)
+                                        {
+                                            <tr>
+                                                <td>
+                                                    <div class="sort-handler">
+                                                        @providers.Code
+                                                    </div>
+                                                </td>
+                                                <td>@providers.Url</td>
+                                                <td>
+                                                    <a href="@providers.DocumentAddress" target="_blank" class="btn btn-secondary btn-action">
+                                                        <i class="fas fa-file-invoice"></i>
+                                                    </a>
+                                                </td>
+                                                <td>@providers.Credit</td>
+                                                <td>
+                                                    <a class="btn btn-success btn-action"
+                                                       onclick="GetProducts(@providers.Id);">
+                                                        <i class="fas fa-download"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-action">
+                                                        <i class="fas fa-book"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer text-right">
+                        @{
+                            if (Model?.Count() <= 0)
+                            {
+                                <div class="alert alert-info text-center">
+                                    <div class="alert-title">وضعیت سرویس دهنده ها</div>
+                                    سرویس دهنده ای موجود نمی باشد  <i class="fas fa-info-circle"></i>
+                                </div>
+                            }
+                            else if (Model == null)
+                            {
+                                <div class="alert alert-danger text-center">
+                                    <div class="alert-title">خطا!</div>
+                                    دریافت اطلاعات سرویس دهنده ها ها با خطا مواجه شده است
+                                </div>
+                            }
+                        }
+                    </div>
+                </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+
+        const commonUrl = @Json.Serialize(@Configuration.GetSection("website").GetSection("API").Value);
+        function GetProducts(Id) {
+            try {
+                swal({
+                    title: 'درخواست دریافت محصولات',
+                    text: 'آیا از دریافت سرویس ها اطمینان دارید؟',
+                    icon: 'warning',
+                    buttons: true,
+                    dangerMode: true,
+                    async: false
+                })
+                    .then((willAccept) => {
+                        if (willAccept) {
+                            ShowLoader();
+                            $.ajax({
+                                url: "/Admin/Panel/GetProviderProducts/" + Id,
+                                type: "POST",
+                                contentType: "application/json; charset=utf-8",
+                                datatype: JSON,
+                                success: function (data) {
+                                    swal(data.message, {
+                                        icon: 'success',
+                                    });
+                                },
+                                error: function (data) {
+                                    HideLoader();
+                                    swal('خطا در ثبت درخواست', data.message, 'error');
+                                },
+                                complete: function (data) { HideLoader(); }
+                            });
+
+                        }
+                    });
+            }
+            catch (data) { HideLoader(); swal('خطا در ثبت درخواست', data.responseJSON.value.message, 'error'); }
+        }
+
+    </script>
+}

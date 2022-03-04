@@ -1,0 +1,82 @@
+﻿@model ListProductPriceViewModel
+
+<div class="modal-header">
+    <h5 class="modal-title">Service Price</h5>
+    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form id="PriceForm" method="POST" class="needs-validation">
+    <div class="modal-body">
+
+        <input asp-for="ProductId" hidden />
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <label asp-for="Rial"></label>
+                    </div>
+                </div>
+                <input asp-for="Rial" class="form-control currency">
+            </div>
+        </div>
+
+        <div class="form-group">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <div class="input-group-text">
+                        <label asp-for="USD"></label>
+                    </div>
+                </div>
+                <input asp-for="USD" class="form-control currency">
+            </div>
+        </div>
+
+    </div>
+    <div class="modal-footer bg-whitesmoke br">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        <button type="submit" class="btn btn-primary">Save changes</button>
+    </div>
+</form>
+
+@*JS Libraies*@
+<script src="~/js/javascript.js"></script>
+<script src="~/js/cleave.min.js"></script>
+
+@*Template JS File*@
+<script src="~/js/scripts.js"></script>
+<script src="~/js/custom.js"></script>
+
+<script type="text/javascript">
+    // check Product Model State is valid
+    $("#PriceForm").submit(function (event) {
+        event.preventDefault();
+        ShowLoader();
+
+        $.ajax({
+            url: "/Admin/Panel/PriceProductAPI",
+            type: "POST",
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            datatype: JSON,
+            data: $('form').serialize(),
+            success: function (data) {
+                swal('قیمت سرویس با موفقیت ثبت شد', {
+                    icon: 'success',
+                })
+                    .then(() => {
+                        $("#ProductPriceModal").modal("hide");
+                        location.reload();
+                    });
+            },
+            error: function (data) {
+                HideLoader();
+                swal('خطا در ثبت درخواست', data.responseJSON.value, 'error');
+            },
+            complete: function (data) { HideLoader(); }
+        });
+    });
+
+</script>
+
+<script src="~/js/jquery.validate.min.js"></script>

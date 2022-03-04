@@ -1,0 +1,201 @@
+﻿@model IEnumerable<ListProductsViewModel>
+@using ReflectionIT.Mvc.Paging
+
+@{
+    ViewData["Title"] = "Products";
+}
+
+<div class="main-content">
+    <section class="section">
+        <div class="section-header">
+            <h1>Services</h1>
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header">
+                        <h4>Services</h4>
+                        <div class="card-header-action"></div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="table-responsive">
+                            <table class="table table-striped table-md">
+                                <tbody>
+                                    <tr>
+                                        <th>ID</th>
+                                        <th>Name</th>
+                                        <th>Provider</th>
+                                        <th>Provider ID</th>
+                                        <th>Provider Price</th>
+                                        <th>Delete</th>
+                                        <th>Edite</th>
+                                        <th>Price</th>
+                                    </tr>
+                                    @if (Model?.Count() > 0)
+                                        foreach (var product in Model)
+                                        {
+                                            <tr>
+                                                <td>@product.Id</td>
+                                                <td>@product.Name</td>
+                                                <td>
+                                                    <a href="@product.Provider" target="_blank" class="btn btn-secondary btn-action">
+                                                        <i class="fas fa-file-invoice"></i>
+                                                    </a>
+                                                </td>
+                                                <td>@product.ProviderProductID</td>
+                                                <td>@product.ProviderPrice</td>
+                                                <td>
+                                                    <a class="btn btn-danger btn-action"
+                                                       onclick="DeleteProduct(@product.Id);">
+                                                        <i class="fas fa-trash"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-primary btn-action"
+                                                       onclick="EditeProduct(@product.Id);">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                </td>
+                                                <td>
+                                                    <a class="btn btn-warning btn-action"
+                                                       onclick="PriceProduct(@product.Id);">
+                                                        <i class="fas fa-dollar-sign"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        }
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="card-footer text-right">
+                        @{
+                            if (Model?.Count() <= 0)
+                            {
+                                <div class="alert alert-info text-center">
+                                    <div class="alert-title">وضعیت محصولات</div>
+                                    محصولی موجود نمی باشد  <i class="fas fa-info-circle"></i>
+                                </div>
+                            }
+                            else if (Model == null)
+                            {
+                                <div class="alert alert-danger text-center">
+                                    <div class="alert-title">خطا!</div>
+                                    دریافت اطلاعات محصولات با مشکل مواجه شده است
+                                </div>
+                            }
+                            else
+                            {
+                                <nav class="d-inline-block">
+                                    @await this.Component.InvokeAsync("Pager", new { PagingList = this.Model })
+                                </nav>
+                            }
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@*Product Detail Modal*@
+<div class="modal fade" tabindex="-1" role="dialog" id="ProductDetailModal">
+    <div class="modal-dialog modal-dialog-centered" role="document" style="max-width: 100000px !important; width: calc(100vw - 30vw)">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+@*Product Price Modal*@
+<div class="modal fade" tabindex="-1" role="dialog" id="ProductPriceModal">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Open Edite Product Modal
+        function EditeProduct(id) {
+            ShowLoader();
+            $.ajax({
+                url: "/Admin/Panel/EditeProduct/" + id,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                //async: false,
+                success: function (data) {
+                    $("#ProductDetailModal .modal-content").html(data);
+                    $("#ProductDetailModal").modal("show");
+                    LoadKindChild();
+                },
+                error: function (data) {
+                    HideLoader();
+                    swal('خطا در ثبت درخواست', data.responseJSON.value.message, 'error');
+                },
+                complete: function (data) { HideLoader(); }
+            });
+        }
+
+        // Delete Product
+        function DeleteProduct(id) {
+            swal({
+                title: 'حذف سرویس',
+                text: 'آیا از حذف سرویس با شماره ' + id + ' اطمینان دارید؟',
+                icon: 'warning',
+                buttons: true,
+                dangerMode: true,
+                async: false
+            })
+                .then((willAccept) => {
+                    if (willAccept) {
+                        ShowLoader();
+                        $.ajax({
+                            url: "/Admin/Panel/DeleteProduct/" + id,
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8",
+                            datatype: JSON,
+                            success: function (data) {
+                                swal('سرویس با موفقیت حذف شد', {
+                                    icon: 'success',
+                                })
+                                    .then(() => {
+                                        location.reload();
+                                    });
+                            },
+                            error: function (data) {
+                                swal('خطا در ثبت درخواست', data.responseJSON.value.message, 'error');
+                            },
+                            complete: function (data) { HideLoader(); }
+                        });
+                    }
+                    HideLoader();
+                });
+        }
+
+        // Open Edite Product Modal
+        function PriceProduct(id) {
+            ShowLoader();
+            $.ajax({
+                url: "/Admin/Panel/PriceProduct/" + id,
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                datatype: JSON,
+                //async: false,
+                success: function (data) {
+                    $("#ProductPriceModal .modal-content").html(data);
+                    $("#ProductPriceModal").modal("show");
+                },
+                error: function (data) {
+                    HideLoader();
+                    swal('خطا در ثبت درخواست', data.responseJSON.value.message, 'error');
+                },
+                complete: function (data) { HideLoader(); }
+            });
+        }
+
+    </script>
+}

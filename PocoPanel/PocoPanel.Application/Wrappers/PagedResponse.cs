@@ -8,11 +8,13 @@ namespace PocoPanel.Application.Wrappers
     {
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public int RecordCount { get; set; }
 
-        public PagedResponse(T data, int pageNumber, int pageSize)
+        public PagedResponse(T data, int pageNumber, int pageSize, int recordCount)
         {
             this.PageNumber = pageNumber;
             this.PageSize = pageSize;
+            this.RecordCount = recordCount;
             this.Data = data;
             this.Message = null;
             this.Succeeded = true;

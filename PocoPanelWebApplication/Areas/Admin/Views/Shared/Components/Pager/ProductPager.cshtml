@@ -1,0 +1,66 @@
+﻿@model ReflectionIT.Mvc.Paging.IPagingList
+
+@{
+    var start = this.Model.StartPageIndex;
+    var stop = this.Model.StopPageIndex;
+}
+
+@if (this.Model.PageCount > 1)
+{
+    <ul class="pagination mb-0" id="pagerUl">
+
+        @if (start > 1)
+        {
+            <li class="page-item myli">
+                <a href="@Url.Action(Model.Action, Model.GetRouteValueForPage(1))" aria-label="First" class="page-link">
+                    <span aria-hidden="true">First</span>
+                </a>
+            </li>
+        }
+
+        @if (this.Model.PageIndex > 1)
+        {
+            <li class="page-item">
+                <a href="@Url.Action(Model.Action, Model.GetRouteValueForPage(this.Model.PageIndex - 1))" aria-label="Previous" class="page-link">
+                    <span aria-hidden="true"><i class="fas fa-chevron-left"></i></span>
+                    @* &laquo; *@
+                </a>
+            </li>
+        }
+
+        @for (int i = start; i <= stop; i++)
+        {
+    <li class="page-item @((Model.PageIndex == i) ? "active" : null)">
+        @if (i == 1)
+        {
+            @Html.ActionLink("1", Model.Action, Model.GetRouteValueForPage(i), new { @class = "page-link" })
+        }
+        else
+        {
+            @Html.ActionLink(i.ToString(), Model.Action, Model.GetRouteValueForPage(i), new { @class = "page-link"})
+        }
+
+    </li>
+        }
+
+        @if (this.Model.PageIndex < this.Model.PageCount)
+        {
+            <li class="page-item">
+                <a href="@Url.Action(Model.Action, Model.GetRouteValueForPage(this.Model.PageIndex + 1))" aria-label="Next" class="page-link">
+                    <span aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+                    @* &raquo; *@
+                </a>
+            </li>
+        }
+
+        @if (stop < this.Model.PageCount)
+        {
+            <li class="page-item">
+                <a href="@Url.Action(Model.Action, Model.GetRouteValueForPage(this.Model.PageCount))" aria-label="Last" class="page-link">
+                    <span aria-hidden="true">Last</span>
+                </a>
+            </li>
+        }
+
+    </ul>
+}

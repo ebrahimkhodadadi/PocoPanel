@@ -34,6 +34,8 @@ namespace PocoPanel.Infrastructure.Persistence
             services.AddTransient<IProductRepositoryAsync, ProductRepositoryAsync>();
             services.AddTransient<IFactorRepositoryAsync, FactorRepositoryAsync>();
             services.AddTransient<IOrderDetailRepositoryAsync, OrderDetailRepositoryAsync>();
+            services.AddTransient<IProviderRepositoryAsync, ProviderRepositoryAsync>();
+            services.AddTransient<IGetInfo, GetInfoAsync>();
             #endregion
         }
     }

@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using PocoPanel.Application.DTOs.Factors;
 using PocoPanel.Application.Features.Factors.Commands.CreateFactor;
 using PocoPanel.Application.Features.Orderdetails.Queries;
 using PocoPanel.Application.Features.Orderdetails.Queries.GetOrderDetailById;
@@ -20,16 +21,22 @@ namespace PocoPanel.WebApi.Controllers.v1
 
         // POST <CreateOrder>
         [HttpPost("CreateOrder")]
-        public async Task<IActionResult> CreateOrder(string ApiToken, [FromQuery]CreateFactorCommand command)
+        public async Task<IActionResult> CreateOrder(string ApiToken, [FromQuery] CreateFactorCommandViewModel command)
         {
             var user = await _IGetUser.GetUserByToken(ApiToken);
             if (user == null)
                 return NotFound("User Not Found!");
 
-            command.CreatedBy = user.UserID;
-            command.Currency = user.Currency;
-
-            return Ok(await Mediator.Send(command));
+            return Ok(await Mediator.Send(new CreateFactorCommand 
+            { 
+                CreatedBy = user.UserID,
+                Currency = user.Currency,
+                Description = command.Description,
+                DiscountCode = command.DiscountCode,
+                Quantity = command.Quantity,
+                ServiceId = command.ServiceId,
+                SocialUserName = command.SocialUserName
+            }));
         }
 
         // POST <GetAllOrder>

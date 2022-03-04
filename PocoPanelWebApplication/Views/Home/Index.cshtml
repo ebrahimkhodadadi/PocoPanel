@@ -1,8 +1,275 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "PocoPanel";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+
+
+    <div class="main-banner wow fadeIn"
+         id="top"
+         data-wow-duration="1s"
+         data-wow-delay="0.5s">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-12">
+                    <div class="row">
+                        <div class="col-lg-6 align-self-center">
+                            <div class="left-content show-up header-text wow fadeInLeft"
+                                 data-wow-duration="1s"
+                                 data-wow-delay="1s">
+                                <div class="row">
+                                    <div class="col-lg-12">
+                                        <h2>
+                                            Poco Panel, the largest virtual service store in Iran
+                                        </h2>
+                                        <p>
+                                            Provider of all social network services, including:
+                                            Telegram {Member _ Visits _ Likes and ...} Instagram
+                                            {Followers _ Likes _ Comments and ...} And hundreds of
+                                            other services with the lowest price and highest
+                                            quality, you can with Once you buy and try our services,
+                                            be aware of their high quality. Multiply your income
+                                            with Poco Panel and keep your customers satisfied
+                                            forever.
+                                        </p>
+                                    </div>
+
+                                    <div class="col-lg-12">
+                                        @if (User.Identity.IsAuthenticated)
+                                        {
+                                            <div class="container">
+                                                <a href="~/Admin/Panel/Index" class="btn btn-primary btn-large ripple">
+                                                    <i class="fas fa-phone-alt"></i> Go To Dashboard
+                                                </a>
+                                            </div>
+                                        }
+                                        @*<div class="white-button scroll-to-section">
+                                                <a href="login.html">
+                                                    Login</i
+                                                    >
+                                                </a>
+                                            </div>*@
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="right-image wow fadeInRight"
+                                 data-wow-duration="1s"
+                                 data-wow-delay="0.5s">
+                                <img src="~/images/slider-dec.png" alt="" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="services" class="services section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="section-heading wow fadeInDown"
+                         data-wow-duration="1s"
+                         data-wow-delay="0.5s">
+                        <h4>Amazing <em>Services &amp; Features</em> for you</h4>
+                        <img src="~/images/heading-line-dec.png" alt="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3">
+                    <div class="service-item first-service">
+                        <div class="icon"></div>
+                        <h4>High speed delivery</h4>
+                        <p>
+                            You will see the results immediately.  As soon as the order is registered, the services you want will increase
+                        </p>
+                        <div class="text-button">
+                            <a href="#">Read More <i class="fa fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="service-item second-service">
+                        <div class="icon"></div>
+                        <h4>High quality service</h4>
+                        <p>
+                            Get the best service with high quality from us.  Customer satisfaction is important to us.  Get the desired outputs by choosing our services at affordable prices
+                        </p>
+                        <div class="text-button">
+                            <a href="#">Read More <i class="fa fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="service-item third-service">
+                        <div class="icon"></div>
+                        <h4>Privacy and security</h4>
+                        <p>
+                            Your information is protected by the Poco Panel team, so you can safely top up your account and use our services.  We advise you to protect your password and do not give it to anyone for your security
+                        </p>
+                        <div class="text-button">
+                            <a href="#">Read More <i class="fa fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-3">
+                    <div class="service-item fourth-service">
+                        <div class="icon"></div>
+                        <h4>24/7 Help & Support</h4>
+                        <p>
+                            Technical support for all our services 24/7 to help you.  If you have any questions, you can contact our support through various social networks such as: (Telegram, WhatsApp, Email ...).  We are happy to help you
+                        </p>
+                        <div class="text-button">
+                            <a href="#">Read More <i class="fa fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+                @*<div class="col-lg-3">
+                    <div class="service-item fourth-service">
+                        <div class="icon"></div>
+                        <h4>Account charging methods</h4>
+                        <p>
+                            You can recharge your account using different methods and one of them is the use of digital currencies. To pay with digital currency, contact support.
+                        </p>
+                        <div class="text-button">
+                            <a href="#">Read More <i class="fa fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>*@
+            </div>
+        </div>
+    </div>
+
+    <div id="about" class="about-us section">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-6 align-self-center">
+                    <div class="section-heading">
+                        <h4>Why our services is The <em>Best</em> ?</h4>
+                        <img src="~/images/heading-line-dec.png" alt="" />
+                        <p>
+                            We have gathered the best different ways to provide the highest quality services in the market.  We offer a wide range of services of the best kind.  We offer a wide range of packages depending on your needs and budget.  Whichever one you choose, our packages are available at the best affordable prices, which will significantly take your social media profile to new heights.  Our only goal is to multiply your sales and increase your customers. We are always by your side.  Take a step forward by purchasing services from us and achieve the desired results.  We offer fast delivery and make your posts attractive.  Select and order the appropriate package so that we can process it and do it as soon as possible.
+                        </p>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <div class="box-item">
+                                <h4><a href="#">Easily get</a></h4>
+                                <p>your service in 3 steps The steps to purchase the service are as follows</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="box-item">
+                                <h4><a href="#">Register</a></h4>
+                                <p>Register on the site so that you can benefit from our services</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="box-item">
+                                <h4><a href="#">Account recharge</a></h4>
+                                <p>You can top up your account with various methods such as digital currency.  Send a message to support to charge via WhatsApp or Telegram.</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-6">
+                            <div class="box-item">
+                                <h4><a href="#">Select and receive service</a></h4>
+                                <p>Select the service you want to add to your cart.  Confirm your order and pay the order and the order will be delivered very quickly after the specified time</p>
+                            </div>
+                        </div>
+                        <div class="col-lg-12">
+                            <div class="gradient-button">
+                                <a asp-action="Register">Click here to start registering and using the panel</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <div class="right-image">
+                        <img src="~/images/about-right-dec.png" alt="" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="pricing" class="pricing-tables">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="section-heading">
+                        <h4>Best selling products</h4>
+                        <img src="~/images/heading-line-dec.png" alt="" />
+                        <p>
+                            You can see the most popular products here Register to buy first
+                        </p>
+                    </div>
+                </div>
+                @*<div class="col-lg-4">
+                    <div class="pricing-item-regular">
+                        <span class="price">$12</span>
+                        <h4>Standard Plan App</h4>
+                        <div class="icon">
+                            <img src="~/images/pricing-table-01.png" alt="" />
+                        </div>
+                        <ul>
+                            <li>Lorem Ipsum Dolores</li>
+                            <li>20 TB of Storage</li>
+                            <li class="non-function">Life-time Support</li>
+                            <li class="non-function">Premium Add-Ons</li>
+                            <li class="non-function">Fastest Network</li>
+                            <li class="non-function">More Options</li>
+                        </ul>
+                        <div class="border-button">
+                            <a href="#">Purchase This Plan Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="pricing-item-pro">
+                        <span class="price">$25</span>
+                        <h4>Business Plan App</h4>
+                        <div class="icon">
+                            <img src="~/images/pricing-table-01.png" alt="" />
+                        </div>
+                        <ul>
+                            <li>Lorem Ipsum Dolores</li>
+                            <li>50 TB of Storage</li>
+                            <li>Life-time Support</li>
+                            <li>Premium Add-Ons</li>
+                            <li class="non-function">Fastest Network</li>
+                            <li class="non-function">More Options</li>
+                        </ul>
+                        <div class="border-button">
+                            <a href="#">Purchase This Plan Now</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-lg-4">
+                    <div class="pricing-item-regular">
+                        <span class="price">$66</span>
+                        <h4>Premium Plan App</h4>
+                        <div class="icon">
+                            <img src="~/images/pricing-table-01.png" alt="" />
+                        </div>
+                        <ul>
+                            <li>Lorem Ipsum Dolores</li>
+                            <li>120 TB of Storage</li>
+                            <li>Life-time Support</li>
+                            <li>Premium Add-Ons</li>
+                            <li>Fastest Network</li>
+                            <li>More Options</li>
+                        </ul>
+                        <div class="border-button">
+                            <a href="#">Purchase This Plan Now</a>
+                        </div>
+                    </div>
+                </div>*@
+            </div>
+        </div>
+    </div>
+
+    

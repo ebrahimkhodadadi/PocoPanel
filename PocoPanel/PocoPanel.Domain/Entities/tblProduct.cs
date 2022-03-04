@@ -44,6 +44,9 @@ namespace PocoPanel.Domain.Entities
         public virtual int? tblProviderId { get; set; }
         public virtual tblProvider tblProvider { get; set; }
 
+        public virtual int? tblQualityId { get; set; }
+        public virtual tblQuality tblQuality { get; set; }
+
         public virtual ICollection<tblProductPriceKind> tblProductPriceKind { get; set; }
 
         #endregion

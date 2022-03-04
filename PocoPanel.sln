@@ -25,7 +25,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocoPanel.Infrastructure.Sh
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{8C2DF7D3-FB5E-416E-8810-A5DE78B31E05}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PocoPanelWebApplication", "PocoPanelWebApplication\PocoPanelWebApplication.csproj", "{EBBB80F6-930F-4A01-AF01-6DF837396D6C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "PocoPanelWebApplication", "PocoPanelWebApplication\PocoPanelWebApplication.csproj", "{EBBB80F6-930F-4A01-AF01-6DF837396D6C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

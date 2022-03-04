@@ -11,6 +11,7 @@ using PocoPanel.Application.Enums;
 using PocoPanel.Application.Exceptions;
 using PocoPanel.Application.Interfaces;
 using PocoPanel.Application.Wrappers;
+using PocoPanel.Domain.Entities;
 using PocoPanel.Domain.Settings;
 using PocoPanel.Infrastructure.Identity.Helpers;
 using PocoPanel.Infrastructure.Identity.Models;
@@ -34,12 +35,18 @@ namespace PocoPanel.Infrastructure.Identity.Services
         private readonly IEmailService _emailService;
         private readonly JWTSettings _jwtSettings;
         private readonly IDateTimeService _dateTimeService;
+        private readonly IGetInfo _GetInfo;
+        private readonly IGetUser _GetUser;
+        private readonly IViewRenderService _ViewRenderService;
         public AccountService(UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             IOptions<JWTSettings> jwtSettings,
             IDateTimeService dateTimeService,
             SignInManager<ApplicationUser> signInManager,
-            IEmailService emailService)
+            IEmailService emailService,
+            IGetInfo getInfo,
+            IGetUser getUser,
+            IViewRenderService viewRenderService)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -47,6 +54,11 @@ namespace PocoPanel.Infrastructure.Identity.Services
             _dateTimeService = dateTimeService;
             _signInManager = signInManager;
             this._emailService = emailService;
+            _GetInfo = getInfo;
+            _GetUser = getUser;
+            _ViewRenderService = viewRenderService;
+
+
         }
 
         public async Task<Response<AuthenticationResponse>> AuthenticateAsync(AuthenticationRequest request, string ipAddress)
@@ -76,11 +88,31 @@ namespace PocoPanel.Infrastructure.Identity.Services
             response.IsVerified = user.EmailConfirmed;
             var refreshToken = GenerateRefreshToken(ipAddress);
             response.RefreshToken = refreshToken.Token;
+            response.PublicCode = user.PublicCode;
+            response.PublicToken = user.ApiToken;
+            response.FirstName = user.FirstName;
+            response.LastName = user.LastName;
             return new Response<AuthenticationResponse>(response, $"Authenticated {user.UserName}");
         }
 
         public async Task<Response<string>> RegisterAsync(RegisterRequest request, string origin)
         {
+            //find Visitor
+            if (!string.IsNullOrWhiteSpace(request.VisitorCode))
+            {
+                var visitor = await _GetUser.GetUserByPublicCode(request.VisitorCode);
+                if (visitor == null)
+                    throw new ApiException($"Visitor By Code '{request.VisitorCode}' not found.");
+            }
+
+            //find Price Kind By Country Id
+            string currency;
+            var tblPriceKind = await _GetInfo.GetPriceKindByCountryId(request.CountryID);
+            if (tblPriceKind?.Name != null)
+                currency = tblPriceKind.Name;
+            else
+                currency = "USD";
+
             var userWithSameUserName = await _userManager.FindByNameAsync(request.UserName);
             if (userWithSameUserName != null)
             {
@@ -95,8 +127,9 @@ namespace PocoPanel.Infrastructure.Identity.Services
                 PublicCode = Guid.NewGuid().ToString().Substring(0, 8),
                 ApiToken = RandomTokenString(),
                 VisitorCode = request.VisitorCode,
-                CountryID = request.CountryID
-
+                CountryID = request.CountryID,
+                Credit = 0,
+                Currency = currency,
             };
             var userWithSameEmail = await _userManager.FindByEmailAsync(request.Email);
             if (userWithSameEmail == null)
@@ -105,13 +138,33 @@ namespace PocoPanel.Infrastructure.Identity.Services
                 if (result.Succeeded)
                 {
                     await _userManager.AddToRoleAsync(user, Roles.Basic.ToString());
+
+                    //get verification URI
                     var verificationUri = await SendVerificationEmail(user, origin);
-                    await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest() { From = "infoEmail@pocopanel.ir", To = user.Email, Body = $"Please confirm your account by visiting this URL {verificationUri}", Subject = "Confirm Registration PocoPanel" });
-                    return new Response<string>(user.Id, message: $"User Registered. Please confirm your account by visiting this URL {verificationUri}");
+
+                    //generate Active Account Model
+                    var activeAccountModel = new ActiveAccountModel()
+                    {
+                        FullName = user.FirstName + " " + user.LastName,
+                        ActiveLink = verificationUri
+                    };
+
+                    //send Active Account Email
+                    await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest()
+                    {
+                        From = "infoEmail@pocopanel.ir",
+                        To = user.Email,
+                        Body = _ViewRenderService.RenderToStringAsync("_ActiveEmail", activeAccountModel),
+                        Subject = "Confirm Registration PocoPanel"
+                    });
+
+                    //return response
+                    return new Response<string>(user.ApiToken, "ApiToken");
                 }
                 else
                 {
-                    throw new ApiException($"{result.Errors}");
+                    string errorText = string.Join(Environment.NewLine, result.Errors.Select(error => error.Description).ToList());
+                    throw new ApiException(errorText);
                 }
             }
             else
@@ -141,8 +194,6 @@ namespace PocoPanel.Infrastructure.Identity.Services
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new Claim("uid", user.Id),
                 new Claim("ip", ipAddress),
-                new Claim("Currency", user.Currency),
-                new Claim("FullName", user.FirstName + " " + user.LastName)
             }
             .Union(userClaims)
             .Union(roleClaims);
@@ -180,18 +231,18 @@ namespace PocoPanel.Infrastructure.Identity.Services
             return verificationUri;
         }
 
-        public async Task<Response<string>> ConfirmEmailAsync(string userId, string code)
+        public async Task<string> ConfirmEmailAsync(string userId, string code, string websiteAddress)
         {
             var user = await _userManager.FindByIdAsync(userId);
             code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             var result = await _userManager.ConfirmEmailAsync(user, code);
             if (result.Succeeded)
             {
-                return new Response<string>(user.Id, message: $"Account Confirmed for {user.Email}. You can now use the /api/Account/authenticate endpoint.");
+                return websiteAddress + "/Home/SignIn/true";
             }
             else
             {
-                throw new ApiException($"An error occured while confirming {user.Email}.");
+                return websiteAddress + "/Home/SignIn/false";
             }
         }
 

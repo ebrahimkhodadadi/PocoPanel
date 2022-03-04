@@ -6,10 +6,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using PocoPanel.Application.Features.Products.Commands.CreateProduct;
 using PocoPanel.Application.Features.Products.Commands.DeleteProductById;
+using PocoPanel.Application.Features.Products.Commands.PriceProduct;
 using PocoPanel.Application.Features.Products.Commands.UpdateProduct;
 using PocoPanel.Application.Features.Products.Queries.GetAllProducts;
 using PocoPanel.Application.Features.Products.Queries.GetAllProductsByPage;
+using PocoPanel.Application.Features.Products.Queries.GetAllProductsByProductKindIdQuery;
 using PocoPanel.Application.Features.Products.Queries.GetProductById;
+using PocoPanel.Application.Features.Products.Queries.GetProductDetailById;
+using PocoPanel.Application.Features.Products.Queries.GetProductPricesById;
 
 namespace PocoPanel.WebApi.Controllers.Authorized
 {
@@ -19,12 +23,19 @@ namespace PocoPanel.WebApi.Controllers.Authorized
     //[ApiExplorerSettings(IgnoreApi = true)]
     public class ProductController : BaseApiController
     {
+        [AllowAnonymous]
+        [HttpGet("GetAllProductsKindId")]
+        public async Task<IActionResult> GetAllProductsKindId(int KindId)
+        {
+            return Ok(await Mediator.Send(new GetAllProductsByProductKindIdQuery() { productKindId = KindId }));
+        }
 
         // Post: /<GetAllProductsByPage>/
         [HttpPost("GetAllProductsByPage")]
-        public async Task<IActionResult> GetAllProductsByPage([FromQuery] GetAllProductsByPageQuery filter)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetAllProductsByPage([FromBody] GetAllProductsByPageQuery filter)
         {
-            return Ok(await Mediator.Send(new GetAllProductsByPageQuery() { PageSize = filter.PageSize, PageNumber = filter.PageNumber }));
+            return Ok(await Mediator.Send(new GetAllProductsByPageQuery() { PageSize = filter.PageSize, PageNumber = filter.PageNumber, IsDeleted = filter.IsDeleted }));
         }
 
         // Post: /<GetAllProducts>/
@@ -34,14 +45,20 @@ namespace PocoPanel.WebApi.Controllers.Authorized
             return Ok(await Mediator.Send(new GetAllProductsQuery() { }));
         }
 
-        // Post /<GetProduct>/5
-        [HttpPost("GetProduct/{id}")]
-        public async Task<IActionResult> GetProduct(int id)
+        // Post /<GetProductDetail>/5
+        [HttpPost("GetProductDetail")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetProductDetail(int id)
+        {    
+            return Ok(await Mediator.Send(new GetProductDetailByIdQuery { Id = id }));
+        }
+
+        // Post /<GetProductPrices>/5
+        [HttpPost("GetProductPrices")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> GetProductPrices(int id)
         {
-            if (id == null || id == 0)
-                return BadRequest();
-                
-            return Ok(await Mediator.Send(new GetProductByIdQuery { Id = id }));
+            return Ok(await Mediator.Send(new GetProductPricesByIdQuery { Id = id }));
         }
 
         // POST <CreateProduct>
@@ -52,28 +69,33 @@ namespace PocoPanel.WebApi.Controllers.Authorized
             return Ok(await Mediator.Send(command));
         }
 
-        /*
-        // PUT api/<controller>/5
-        [HttpPut("{id}")]
-        [ApiExplorerSettings(IgnoreApi = true)]
+
+        // POST api/<controller>/5
+        [HttpPost("EditeProduct")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Put(int id, UpdateProductCommand command)
+        public async Task<IActionResult> EditeProduct(UpdateProductCommand command)
         {
-            if (id != command.Id)
-            {
-                return BadRequest();
-            }
             return Ok(await Mediator.Send(command));
         }
 
-        // DELETE api/<controller>/5
-        [HttpDelete("{id}")]
-        [ApiExplorerSettings(IgnoreApi = true)]
+        
+        // Post api/<controller>/5
+        [HttpPost("DeleteProduct")]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<IActionResult> DeleteProduct(int id)
         {
             return Ok(await Mediator.Send(new DeleteProductByIdCommand { Id = id }));
         }
-        */
+
+
+        // POST api/<EditePriceProduct>/5
+        [HttpPost("EditePriceProduct")]
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> EditePriceProduct(PriceProductCommand command)
+        {
+            return Ok(await Mediator.Send(command));
+        }
+        
+
     }
 }
