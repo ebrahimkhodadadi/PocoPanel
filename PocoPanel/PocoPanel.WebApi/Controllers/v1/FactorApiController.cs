@@ -61,7 +61,7 @@ namespace PocoPanel.WebApi.Controllers.v1
             if (id == null || id == 0)
                 return BadRequest();
 
-            return Ok(await Mediator.Send(new GetOrderDetailByIdQuery { Id = id, Currency = user.Currency }));
+            return Ok(await Mediator.Send(new GetOrderDetailByIdQuery { UserId = user.UserID ,Id = id, Currency = user.Currency }));
         }
     }
 }

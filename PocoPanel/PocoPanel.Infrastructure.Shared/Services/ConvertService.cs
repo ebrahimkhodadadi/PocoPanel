@@ -25,7 +25,7 @@ namespace PocoPanel.Infrastructure.Shared.Services
 
         public string GetSocialUserName(string userName)
         {
-            string result = userName;
+            string result = userName.ToLower();
 
             if (userName.StartsWith("@"))
                 result = userName.Remove(0, 1);

@@ -69,6 +69,18 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
                 .Where(products => products.tblProviderId == tblprovider.Id)
                 .ToListAsync();
 
+            //حذف محصولات حذف شده توسط سرویس دهنده
+            var deleteList = savedProducts.AsEnumerable().Where(product => !product.IsDelete && 
+            !providerProducts.Select(provider => provider.service).Contains(product.ProviderProductID)).ToList();
+            deleteList.ForEach(product => product.IsDelete = true);
+            foreach (var deletedProduct in deleteList)
+            {
+                _dbContext.Entry(deletedProduct).State = EntityState.Modified;
+            }
+            await _dbContext.SaveChangesAsync();
+
+
+            //محصولات ثبت نشده
             var listDistinctProducts = providerProducts
                 .AsEnumerable().Where(provider =>
                 !savedProducts.Select(saved => saved.ProviderProductID).Contains(provider.service))
@@ -82,7 +94,8 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
                     Price = Convert.ToDecimal(provider.rate),
                     tblProductKindId = 25, //Unkown
                     tblProviderId = tblprovider.Id,
-                    ProviderProductID = provider.service
+                    ProviderProductID = provider.service,
+                    IsDelete = true
                 })
                 .ToList();
 

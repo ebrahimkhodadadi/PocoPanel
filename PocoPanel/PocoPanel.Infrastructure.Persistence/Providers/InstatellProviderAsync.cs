@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PocoPanel.Application.DTOs.Factors;
 using PocoPanel.Application.DTOs.Products;
 using PocoPanel.Application.Interfaces.Repositories;
@@ -30,15 +31,23 @@ namespace PocoPanel.Infrastructure.Persistence.Providers
         {
             var query = new Dictionary<string, string>()
             {
-                ["serviceId"] = orderModel.serviceId.ToString(),
+                ["service"] = orderModel.serviceId.ToString(),
                 ["link"] = orderModel.link.ToString(),
                 ["quantity"] = orderModel.quantity.ToString(),
                 ["key"] = _Key,
                 ["action"] = "add"
             };
 
-            var uri = QueryHelpers.AddQueryString(_url, query);
-            using var response = await _httpClient.GetAsync(uri);
+            var uri = _url;
+            var content = new JObject();
+            var requestUri = QueryHelpers.AddQueryString(uri, query);
+            var request = new HttpRequestMessage(HttpMethod.Post, requestUri);
+            request.Content = new StringContent(
+                content.ToString(),
+                Encoding.UTF8,
+                "application/json"
+            );
+            var response = await _httpClient.SendAsync(request);
 
             if (!response.IsSuccessStatusCode)
             {

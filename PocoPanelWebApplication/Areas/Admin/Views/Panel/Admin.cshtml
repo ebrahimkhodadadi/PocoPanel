@@ -10,7 +10,7 @@
         <div class="section-header">
             <h1>Dashboard</h1>
         </div>
-        <div class="row">
+        @*<div class="row">
             <div class="col-lg-3 col-md-6 col-sm-6 col-12">
                 <div class="card card-statistic-1">
                     <div class="card-icon bg-primary">
@@ -63,7 +63,7 @@
                     </div>
                 </div>
             </div>
-        </div>
+        </div>*@
         <div class="row">
             <div class="col-12">
                 <div class="card">
@@ -172,7 +172,7 @@
                             datatype: JSON,
                             //async: false,
                             success: function (data) {
-                                swal(data.responseJSON.value.message, {
+                                swal(data, {
                                     icon: 'success',
                                 })
                                     .then(() => {
@@ -180,12 +180,11 @@
                                     });
                             },
                             error: function (data) {
-                                swal('خطا در ثبت درخواست', data.responseJSON.value.message, 'error');
+                                swal('خطا در ثبت درخواست', data.responseJSON.value, 'error');
                             },
                             complete: function (data) { HideLoader(); }
                         });
                     }
-                    HideLoader();
                 });
             }
     </script>

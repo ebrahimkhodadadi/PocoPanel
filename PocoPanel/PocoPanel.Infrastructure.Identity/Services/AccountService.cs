@@ -265,15 +265,24 @@ namespace PocoPanel.Infrastructure.Identity.Services
             if (account == null) return;
 
             var code = await _userManager.GeneratePasswordResetTokenAsync(account);
-            var route = "api/account/reset-password/";
+            var route = "Auth/ForgotPasswordPage/";
             var _enpointUri = new Uri(string.Concat($"{origin}/", route));
-            var emailRequest = new EmailRequest()
+
+            //generate reset Password Model
+            var resetPasswordModel = new ResetPasswordModel()
             {
-                Body = $"You reset token is - {code}",
-                To = model.Email,
-                Subject = "Reset Password",
+                Token = code,
+                Url = _enpointUri.ToString()
             };
-            await _emailService.SendAsync(emailRequest);
+
+            //send Active Account Email
+            await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest()
+            {
+                From = "infoEmail@pocopanel.ir",
+                To = model.Email,
+                Body = _ViewRenderService.RenderToStringAsync("_ResetPassword", resetPasswordModel),
+                Subject = "Reset Password PocoPanel"
+            });
         }
 
         public async Task<Response<string>> ResetPassword(ResetPasswordRequest model)

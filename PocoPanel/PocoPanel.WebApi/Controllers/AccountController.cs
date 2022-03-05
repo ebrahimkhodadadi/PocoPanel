@@ -43,7 +43,7 @@ namespace PocoPanel.WebApi.Controllers
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword(ForgotPasswordRequest model)
         {
-            await _accountService.ForgotPassword(model, Request.Headers["origin"]);
+            await _accountService.ForgotPassword(model, _Website.UI);
             return Ok();
         }
         [HttpPost("reset-password")]

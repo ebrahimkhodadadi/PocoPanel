@@ -44,9 +44,9 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
         #region Create Factor
         public async Task<tblOrder> CreateFactor(CreateFactorCommand CreateFactorCommand)
         {
-            var tblPriceKind = _dbContext.tblPriceKind.FirstOrDefault(productKind => productKind.Name == CreateFactorCommand.Currency);
-            var tblProductPriceKind = _dbContext.tblProductPriceKind
-                .FirstOrDefault(productPrice => productPrice.tblPriceKindId == tblPriceKind.Id
+            var tblPriceKind = await _dbContext.tblPriceKind.FirstOrDefaultAsync(productKind => productKind.Name == CreateFactorCommand.Currency);
+            var tblProductPriceKind = await _dbContext.tblProductPriceKind
+                .FirstOrDefaultAsync(productPrice => productPrice.tblPriceKindId == tblPriceKind.Id
                                     && productPrice.tblProductId == CreateFactorCommand.ServiceId);
             //ToDo:Calcualte Discount
             // if(string.IsNullOrWhiteSpace(CreateFactorCommand.DiscountCode))
@@ -60,7 +60,6 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
                 //tblDiscountId = CreateFactorCommand.DiscountCode,
                 tblStatusId = (int)Status.Waiting
             };
-
             await _dbContext.tblOrder.AddAsync(order);
             await _dbContext.SaveChangesAsync();
 
@@ -71,15 +70,13 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
                 SocialUserName = _IConvert.GetSocialUserName(CreateFactorCommand.SocialUserName),
                 Quantity = CreateFactorCommand.Quantity,
                 tblProductId = CreateFactorCommand.ServiceId,
-                tblOrderId = order.Id,
                 TotallPrice = _IConvert.RoundNumber(tblProductPriceKind?.Price ?? 0) ,
                 tblStatusId = (int)Status.Waiting,
+                tblOrderId = order.Id
             });
-
             await _dbContext.SaveChangesAsync();
 
             #region Send Email To Admin
-            //send Active Account Email
             await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest()
             {
                 From = "infoEmail@pocopanel.ir",
@@ -127,7 +124,7 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
             if (product == null)
                 throw new ApiException("محصول مورد نظر در سایت پذیرنده یافت نشد.");
 
-            if (Convert.ToDecimal(product.rate * orderDetail.Quantity) > balance.balance)
+            if (Convert.ToDecimal(product.rate * (orderDetail.Quantity / 1000)) > balance.balance)
                 throw new ApiException("موجودی حساب شما در سایت پذیرنده کمتر از مقدار درخواستی میباشد.");
 
 
@@ -144,6 +141,7 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
                 orderDetail.tblStatusId = (int)Status.InProgress;
                 orderDetail.ProviderOrderId = createOrderStatus.order;
 
+                _dbContext.Entry(orderDetail).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
                 return new Response<bool>(true, $"سفارش مورد نظر با شماره پیگیری از سایت پذیرنده {createOrderStatus.order} با موفقیت تایید شد.");
             }
@@ -159,6 +157,7 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
                 throw new ApiException("سفارش مورد نظر یافت نشد.");
 
             orderDetail.tblStatusId = (int)Status.Rejected;
+            _dbContext.Entry(orderDetail).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();
 
             //ToDo: Send Customer Email

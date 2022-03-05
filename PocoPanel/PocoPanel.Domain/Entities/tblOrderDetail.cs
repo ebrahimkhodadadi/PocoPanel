@@ -29,6 +29,8 @@ namespace PocoPanel.Domain.Entities
         [Required]
         public int Quantity { get; set; }
 
+        public int? ProviderOrderId { get; set; }
+
         #region Foreign Key
         [Required]
         public virtual int tblProductId { get; set; }
@@ -41,9 +43,6 @@ namespace PocoPanel.Domain.Entities
         public virtual int tblStatusId { get; set; }
         public virtual tblStatus tblStatus { get; set; }
 
-        [ForeignKey("ProviderOrderId")]
-        public virtual tblProvider tblProvider { get; set; }
-        public virtual int? ProviderOrderId { get; set; }
         #endregion
     }
 }

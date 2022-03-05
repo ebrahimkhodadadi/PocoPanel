@@ -191,10 +191,10 @@ namespace PocoPanelWebApplication.Areas.Admin.Controllers
 
             if (!response.IsSuccessStatusCode)
             {
-                return BadRequest(new JsonResult(acceptResponse));
+                return BadRequest(new JsonResult(acceptResponse.Message));
             }
 
-            return new JsonResult(acceptResponse);
+            return new JsonResult(acceptResponse.Message);
         }
 
         #endregion

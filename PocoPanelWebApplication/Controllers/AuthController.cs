@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using PocoPanelWebApplication.DTOs.Account;
 using PocoPanelWebApplication.Models;
 using System;
@@ -153,6 +155,57 @@ namespace PocoPanelWebApplication.Controllers
             return Redirect("../Home/SignIn");
         }
 
+        #endregion
+
+        #region ForgotPassword
+        [HttpPost("ForgotPassword")]
+        public async Task<IActionResult> ForgotPassword(string email)
+        {
+            if (!ModelState.IsValid)
+                return View("../Home/ForgotPassword", new ForgotPasswordViewModel() { Email = email });
+
+            //Serialize
+            var content = new StringContent(JsonConvert.SerializeObject(new ForgotPasswordViewModel() { Email = email }), Encoding.UTF8, "application/json");
+            //Send Request
+            using var response = await _httpClient.PostAsync(_WebSiteSettings.API + "/Account/forgot-password", content);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var result = await response.Content.ReadAsStringAsync();
+                var responseResult = JsonConvert.DeserializeObject<ApiResponse<string>>(result);
+                return BadRequest(new JsonResult(responseResult.Message));
+            }
+
+            return Redirect("~/Home/Index");
+        }
+
+        [HttpPost("ForgotPasswordPage")]
+        public async Task<IActionResult> ForgotPasswordPage(string tokenCode)
+        {
+            return View("../Home/ResetPassword", new ResetPasswordRequest() { Token = tokenCode});
+        }
+
+        [HttpPost("resetpassword")]
+        public async Task<IActionResult> ResetPassword(ResetPasswordRequest resetPassword)
+        {
+            if (!ModelState.IsValid)
+                return View("../Home/ResetPassword", resetPassword);
+
+            //Serialize
+            var content = new StringContent(JsonConvert.SerializeObject(resetPassword), Encoding.UTF8, "application/json");
+            //Send Request
+            using var response = await _httpClient.PostAsync(_WebSiteSettings.API + "/Account/reset-password", content);
+
+            var result = await response.Content.ReadAsStringAsync();
+            var responseResult = JsonConvert.DeserializeObject<ApiResponse<string>>(result);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return BadRequest(new JsonResult(responseResult.Message));
+            }
+
+            return new JsonResult(responseResult.Message);
+        }
         #endregion
     }
 }

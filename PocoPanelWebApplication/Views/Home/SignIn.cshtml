@@ -48,7 +48,7 @@
                             <div class="card-header"><h4>Login</h4></div>
 
                             <div class="card-body">
-                                <form asp-controller="Auth" asp-action="SignIn" method="POST"
+                                <form id="FormSignIn" asp-controller="Auth" asp-action="SignIn" method="POST"
                                       class="needs-validation"
                                       novalidate="">
                                     @{
@@ -104,7 +104,7 @@
                                         <div class="d-block">
                                             <label asp-for="Password" for="password" class="control-label"></label>
                                             <div class="float-right">
-                                                <a href="auth-forgot-password.html"
+                                                <a asp-controller="Home" asp-action="ForgotPassword"
                                                    class="text-small">
                                                     Forgot Password?
                                                 </a>
@@ -134,7 +134,8 @@
                                     <recaptcha />
 
                                     <div class="form-group">
-                                        <button type="submit"
+                                        <button id="submit"
+                                                type="submit"
                                                 class="btn btn-primary btn-lg btn-block"
                                                 tabindex="4">
                                             Login
@@ -183,8 +184,16 @@
     <!-- Template JS File -->
     <script src="~/js/scripts.js"></script>
     <script src="~/js/custom.js"></script>
+    <script src="~/js/sweetalert.min.js"></script>
 
     <!-- Page Specific JS File -->
+    <script>
+        $("#FormSignIn").submit(function (event) {
+            if ($(this).valid()) {
+                $("#submit").addClass("btn-progress disabled");
+            }
+        });
+    </script>
 </body>
 </html>
 
