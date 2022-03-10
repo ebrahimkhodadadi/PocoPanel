@@ -10,7 +10,7 @@ namespace PocoPanelWebApplication.Controllers
     {
         public IActionResult Index()
         {
-            return View();
+            return Redirect("NotFound");
         }
     }
 }

@@ -410,7 +410,7 @@ new tblCountry() { Id = 250, Name = "Zimbabwe" }
 
             #region tblProvider
             builder.Entity<tblProvider>().HasData(
-                new tblProvider() { Id = 1, Code = "instatell",  Url= "https://instatell.ir/api/v1", DocumentAddress= "https://instatell.ir/api/v1", ProviderToken = "UjXn0H3iBwdj7q9T1P7UiMaB0d6RxsX5", Email = "09904955342", Password = "Pouyapouya800" }
+                new tblProvider() { Id = 1, Code = "instatell",  Url= "https://instatell.ir/api/v1", DocumentAddress= "https://instatell.ir/api/v1", ProviderToken = "UjXn0H3iBwdj7q9T1P7UiMaB0d6RxsX5", Email = "09904955342", Password = "Pouyapouya800"}
                 );
             #endregion
 

@@ -42,7 +42,7 @@ namespace PocoPanelWebApplication.Areas.Admin.Controllers
         #endregion
 
         #region Sidebar Views
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
 
             if (User.FindAll(ClaimTypes.Role).Any(Roles => Roles.Value == "Admin"))

@@ -18,13 +18,13 @@ namespace PocoPanel.WebApi.Extensions
                 c.SwaggerDoc("v1", new OpenApiInfo
                 {
                     Version = "v1",
-                    Title = "Clean Architecture - PocoPanel.WebApi",
-                    Description = "This Api will be responsible for overall data distribution and authorization.",
+                    Title = "PocoPanel.WebApi",
+                    Description = "Each Service price quantity is for 1000",
                     Contact = new OpenApiContact
                     {
-                        Name = "codewithmukesh",
-                        Email = "hello@codewithmukesh.com",
-                        Url = new Uri("https://codewithmukesh.com/contact"),
+                        Name = "www.PocoPanel.ir",
+                        Email = "pocopanel@gmail.com",
+                        Url = new Uri("https://pocopanel.ir"),
                     }
                 });
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme

@@ -14,7 +14,7 @@ namespace PocoPanel.WebApi.Controllers.Authorized
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    //[ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class FactorController : BaseApiController
     {
        // POST<AcceptFactor>

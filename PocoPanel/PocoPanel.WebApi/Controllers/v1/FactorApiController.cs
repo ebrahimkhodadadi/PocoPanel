@@ -56,9 +56,9 @@ namespace PocoPanel.WebApi.Controllers.v1
         {
             var user = await _IGetUser.GetUserByToken(ApiToken);
             if (user == null)
-                return NotFound("User Not Found!");
+                return NotFound("User Not Found !");
 
-            if (id == null || id == 0)
+            if (id == 0)
                 return BadRequest();
 
             return Ok(await Mediator.Send(new GetOrderDetailByIdQuery { UserId = user.UserID ,Id = id, Currency = user.Currency }));

@@ -180,7 +180,7 @@ namespace PocoPanelWebApplication.Controllers
         }
 
         [HttpPost("ForgotPasswordPage")]
-        public async Task<IActionResult> ForgotPasswordPage(string tokenCode)
+        public IActionResult ForgotPasswordPage(string tokenCode)
         {
             return View("../Home/ResetPassword", new ResetPasswordRequest() { Token = tokenCode});
         }

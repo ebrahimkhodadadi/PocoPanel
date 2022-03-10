@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace PocoPanel.WebApi.Controllers
 {
-    //[ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [Route("[controller]")]
     [ApiController]
     public class AccountController : ControllerBase

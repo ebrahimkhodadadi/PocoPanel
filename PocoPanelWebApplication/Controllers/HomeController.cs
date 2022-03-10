@@ -18,6 +18,12 @@ namespace PocoPanelWebApplication.Controllers
         {
             _logger = logger;
         }
+        
+        [Route("/NotFound")]
+        public IActionResult PageNotFound()
+        {
+            return View();
+        }
 
         public IActionResult Index()
         {
@@ -48,6 +54,11 @@ namespace PocoPanelWebApplication.Controllers
         }
 
         public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        public IActionResult Error()
         {
             return View();
         }

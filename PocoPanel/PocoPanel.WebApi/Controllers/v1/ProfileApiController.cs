@@ -26,7 +26,7 @@ namespace PocoPanel.WebApi.Controllers.v1
             return Ok(user);
         }
 
-        //[ApiExplorerSettings(IgnoreApi = true)]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("GetListCountries")]
         public async Task<IActionResult> GetListCountries()
         {

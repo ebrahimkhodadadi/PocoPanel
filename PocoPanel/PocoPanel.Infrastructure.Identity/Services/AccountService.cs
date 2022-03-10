@@ -152,7 +152,6 @@ namespace PocoPanel.Infrastructure.Identity.Services
                     //send Active Account Email
                     await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest()
                     {
-                        From = "infoEmail@pocopanel.ir",
                         To = user.Email,
                         Body = _ViewRenderService.RenderToStringAsync("_ActiveEmail", activeAccountModel),
                         Subject = "Confirm Registration PocoPanel"

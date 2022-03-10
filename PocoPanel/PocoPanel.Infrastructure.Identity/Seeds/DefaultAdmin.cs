@@ -23,7 +23,9 @@ namespace PocoPanel.Infrastructure.Identity.Seeds
                 FirstName = "Pouy",
                 LastName = "Pouy",
                 EmailConfirmed = true,
-                PhoneNumberConfirmed = true
+                PhoneNumberConfirmed = true,
+                ApiToken = "1",
+                PublicCode = "1"
             };
             if (userManager.Users.All(u => u.Id != defaultUser.Id))
             {

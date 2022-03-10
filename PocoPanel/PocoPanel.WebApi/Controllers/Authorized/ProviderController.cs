@@ -13,7 +13,7 @@ namespace PocoPanel.WebApi.Controllers.Authorized
     [ApiController]
     [Route("[controller]")]
     [Authorize]
-    //[ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class ProviderController : BaseApiController
     {
         [Authorize(Roles = "Admin")]

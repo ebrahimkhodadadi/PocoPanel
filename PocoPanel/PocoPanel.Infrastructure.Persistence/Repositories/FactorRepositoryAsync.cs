@@ -1,5 +1,4 @@
-﻿
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using PocoPanel.Application.DTOs.Factors;
 using PocoPanel.Application.Exceptions;
@@ -22,16 +21,20 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
     public class FactorRepositoryAsync : IFactorRepositoryAsync
     {
         #region Properties
+
         private readonly ApplicationDbContext _dbContext;
         private readonly IConvert _IConvert;
         private readonly IGetUser _IGetUser;
         private IProviderAsync _IProvicerAsync;
         private readonly IEmailService _emailService;
         private readonly WebsiteModel _Website;
+
         #endregion
 
         #region Constructor
-        public FactorRepositoryAsync(ApplicationDbContext dbContext, IConvert iConvert, IGetUser iGetUser, IEmailService emailService, IOptions<WebsiteModel> website)
+
+        public FactorRepositoryAsync(ApplicationDbContext dbContext, IConvert iConvert, IGetUser iGetUser,
+            IEmailService emailService, IOptions<WebsiteModel> website)
         {
             _dbContext = dbContext;
             _IConvert = iConvert;
@@ -39,15 +42,19 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
             _emailService = emailService;
             _Website = website.Value;
         }
+
         #endregion
 
         #region Create Factor
+
         public async Task<tblOrder> CreateFactor(CreateFactorCommand CreateFactorCommand)
         {
-            var tblPriceKind = await _dbContext.tblPriceKind.FirstOrDefaultAsync(productKind => productKind.Name == CreateFactorCommand.Currency);
+            var tblPriceKind =
+                await _dbContext.tblPriceKind.FirstOrDefaultAsync(productKind =>
+                    productKind.Name == CreateFactorCommand.Currency);
             var tblProductPriceKind = await _dbContext.tblProductPriceKind
                 .FirstOrDefaultAsync(productPrice => productPrice.tblPriceKindId == tblPriceKind.Id
-                                    && productPrice.tblProductId == CreateFactorCommand.ServiceId);
+                                                     && productPrice.tblProductId == CreateFactorCommand.ServiceId);
             //ToDo:Calcualte Discount
             // if(string.IsNullOrWhiteSpace(CreateFactorCommand.DiscountCode))
             //     CreateFactorCommand.DiscountCode = null;
@@ -70,34 +77,44 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
                 SocialUserName = _IConvert.GetSocialUserName(CreateFactorCommand.SocialUserName),
                 Quantity = CreateFactorCommand.Quantity,
                 tblProductId = CreateFactorCommand.ServiceId,
-                TotallPrice = _IConvert.RoundNumber(tblProductPriceKind?.Price ?? 0) ,
+                TotallPrice = _IConvert.RoundNumber(tblProductPriceKind?.Price ?? 0),
                 tblStatusId = (int)Status.Waiting,
                 tblOrderId = order.Id
             });
             await _dbContext.SaveChangesAsync();
 
             #region Send Email To Admin
-            await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest()
+
+            try
             {
-                From = "infoEmail@pocopanel.ir",
-                To = _Website.AdminEmail,
-                Body = $"فاکتور جدید با شماره پیگیری {order.Id} به ثبت رسید لطفا جهت تایید به پنل خود مراجعه نمایید",
-                Subject = "PocoPanel Factor"
-            });
+                await _emailService.SendAsync(new Application.DTOs.Email.EmailRequest()
+                {
+                    To = _Website.AdminEmail,
+                    Body =
+                        $"فاکتور جدید با شماره پیگیری {order.Id} به ثبت رسید لطفا جهت تایید به پنل خود مراجعه نمایید",
+                    Subject = "PocoPanel Factor"
+                });
+            }
+            catch (Exception ex){ }
+
             #endregion
 
             return order;
         }
+
         #endregion
 
         #region Is exist product
+
         public async Task<bool> IsExistProductId(int ServiceId)
         {
             return _dbContext.tblProduct.Any(product => product.Id == ServiceId);
         }
+
         #endregion
 
         #region Provider Accept & Reject
+
         public async Task<Response<bool>> AcceptFactor(int orderDetailID)
         {
             //check if Order Exist
@@ -143,7 +160,8 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
 
                 _dbContext.Entry(orderDetail).State = EntityState.Modified;
                 await _dbContext.SaveChangesAsync();
-                return new Response<bool>(true, $"سفارش مورد نظر با شماره پیگیری از سایت پذیرنده {createOrderStatus.order} با موفقیت تایید شد.");
+                return new Response<bool>(true,
+                    $"سفارش مورد نظر با شماره پیگیری از سایت پذیرنده {createOrderStatus.order} با موفقیت تایید شد.");
             }
             else
                 throw new ApiException("ثبت سفارش از طرف سایت پذیرنده با خطا مواجه شد.");
@@ -177,10 +195,12 @@ namespace PocoPanel.Infrastructure.Persistence.Repositories
             {
                 OrderId = orderDetails?.tblOrderId,
                 OrderDetailId = orderDetails.Id,
-                Price = _IConvert.RoundNumber(orderDetails.TotallPrice) + " " + orderDetails.tblOrder?.tblPriceKind?.Name,
+                Price = _IConvert.RoundNumber(orderDetails.TotallPrice) + " " +
+                        orderDetails.tblOrder?.tblPriceKind?.Name,
                 DateTime = _IConvert.PersionDateTime(orderDetails.Created)
             });
         }
+
         #endregion
     }
 }
